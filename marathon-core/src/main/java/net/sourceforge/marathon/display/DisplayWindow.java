@@ -3144,7 +3144,7 @@ public class DisplayWindow extends Stage implements INameValidateChecker, IResou
         Platform.runLater(() -> {
             String projectDir = System.getProperty(Constants.PROP_PROJECT_DIR);
             List<Boolean> projectEdited = new ArrayList<>();
-            String title = "Configure";
+            String title = "Configuración";
             Properties properties = new Properties();
             try {
                 properties = ProjectFile.getProjectProperties();
@@ -3156,7 +3156,7 @@ public class DisplayWindow extends Stage implements INameValidateChecker, IResou
             setFrameWork(properties);
             String name = properties.getProperty(Constants.PROP_PROJECT_NAME);
             if (name != null) {
-                title = "Configure - " + name;
+                title = "Configurar - " + name;
             }
             MPFConfigurationInfo mpfConfigurationInfo = new MPFConfigurationInfo(title, projectDir, properties);
             MPFConfigurationStage mpfConfigurationStage = new MPFConfigurationStage(null, mpfConfigurationInfo) {

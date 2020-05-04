@@ -61,7 +61,8 @@ public class MPFConfigurationInfo {
 
     public IPropertiesLayout[] getProperties(ModalDialog<?> parent) {
         applicationLayout = new ApplicationLayout(parent);
-        return new IPropertiesLayout[] { new ProjectLayout(parent), applicationLayout, new ScriptLayout(parent) };
+//        return new IPropertiesLayout[] { new ProjectLayout(parent), applicationLayout, new ScriptLayout(parent) };
+        return new IPropertiesLayout[] { new ProjectLayout(parent), applicationLayout };
     }
 
     public IRuntimeLauncherModel getLauncherModel() {

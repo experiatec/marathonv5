@@ -177,7 +177,8 @@ public class RealMain {
         OSUtils.setLogConfiguration(projectDir);
         Injector injector = GuiceInjector.get();
         final DisplayWindow display = injector.getInstance(DisplayWindow.class);
-        display.setVisible(true);
+//        display.setVisible(true);
+        display.onEt();
     }
 
     private static void initializeInjector() {
@@ -221,8 +222,10 @@ public class RealMain {
         List<String> selectedProjects = new ArrayList<>();
         ObservableList<ProjectInfo> projectList = FXCollections.observableArrayList();
         List<List<String>> frameworks = Arrays.asList(Arrays.asList("Java/Swing Project", Constants.FRAMEWORK_SWING),
-                Arrays.asList("Java/FX Project", Constants.FRAMEWORK_FX),
-                Arrays.asList("Web Application Project", Constants.FRAMEWORK_WEB));
+                Arrays.asList("Java/FX Project", Constants.FRAMEWORK_FX));
+//        List<List<String>> frameworks = Arrays.asList(Arrays.asList("Java/Swing Project", Constants.FRAMEWORK_SWING),
+//                Arrays.asList("Java/FX Project", Constants.FRAMEWORK_FX),
+//                Arrays.asList("Web Application Project", Constants.FRAMEWORK_WEB));
         ProjectSelection selection = new ProjectSelection(projectList, frameworks) {
             @Override
             protected void onSelect(ProjectInfo selected) {

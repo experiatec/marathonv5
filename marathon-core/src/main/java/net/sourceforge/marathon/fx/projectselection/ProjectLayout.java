@@ -92,7 +92,8 @@ public class ProjectLayout implements IPropertiesLayout, IFileSelectedAction {
 
     @Override
     public Node getIcon() {
-        return FXUIUtils.getIcon("prj_obj");
+    	return FXUIUtils.getIcon("editor");
+//        return FXUIUtils.getIcon("prj_obj");
     }
 
     @Override
