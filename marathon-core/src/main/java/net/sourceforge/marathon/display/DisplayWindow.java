@@ -91,6 +91,7 @@ import junit.framework.AssertionFailedError;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import net.sourceforge.marathon.ProjectHTTPDServer;
+import net.sourceforge.marathon.RealMain;
 import net.sourceforge.marathon.Version;
 import net.sourceforge.marathon.api.LogRecord;
 import net.sourceforge.marathon.api.TestAttributes;
@@ -1061,11 +1062,8 @@ public class DisplayWindow extends Stage implements INameValidateChecker, IResou
             toolBar.setId("controller-toolbar");
             toolBar.setOrientation(javafx.geometry.Orientation.VERTICAL);
             this.displayWindow.rawRecordButton = this.displayWindow.rawRecordAction.getToggleButton();
-            toolBar.getItems().addAll(this.displayWindow.getActionButton(this.displayWindow.pauseAction),
-                    this.displayWindow.getActionButton(this.displayWindow.insertScriptAction),
-                    this.displayWindow.getActionButton(this.displayWindow.insertChecklistAction),
-                    this.displayWindow.getActionButton(this.displayWindow.stopAction), this.displayWindow.rawRecordButton,
-                    this.displayWindow.getActionButton(this.displayWindow.recorderConsoleAction));
+            toolBar.getItems().addAll(
+                    this.displayWindow.getActionButton(this.displayWindow.stopAction));
             textArea.setId("textArea");
             textArea.setEditable(false);
             textArea.setStyle(
@@ -1079,23 +1077,23 @@ public class DisplayWindow extends Stage implements INameValidateChecker, IResou
         public void insertScript(String script) {
             BufferedReader reader = new BufferedReader(new StringReader(script));
             String line;
-            String[] lines = new String[5];
+            String[] lines = new String[30];
             int index = 0;
             try {
                 while ((line = reader.readLine()) != null) {
                     lines[index++] = line;
-                    if (index == 5) {
+                    if (index == 30) {
                         index = 0;
                     }
                 }
             } catch (IOException e) {
             }
             StringBuilder text = new StringBuilder();
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < 30; i++) {
                 if (lines[index] != null) {
                     text.append(lines[index].trim()).append('\n');
                 }
-                if (++index == 5) {
+                if (++index == 30) {
                     index = 0;
                 }
             }
@@ -1119,7 +1117,7 @@ public class DisplayWindow extends Stage implements INameValidateChecker, IResou
     }
 
     void endController() {
-        show();
+//        show();
         controller.close();
     }
 
@@ -3079,6 +3077,7 @@ public class DisplayWindow extends Stage implements INameValidateChecker, IResou
             save();
             exploratoryTest = false;
         }
+        RealMain.runGUI();
     }
 
     public void onRawRecord() {

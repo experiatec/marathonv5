@@ -129,7 +129,6 @@
 /marathon/.project
 /marathon/.settings/
 /marathon/build/
-/marathon/src/main
 /marathon/.gitignore
 /marathon-core/bin/
 /marathon-java/bin-test/
@@ -197,3 +196,4 @@
 /marathon-web/marathon-web-runtime/bin-test/
 /marathon-web/marathon-web-runtime/internetexplorer.log 
 
+/.project

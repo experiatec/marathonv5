@@ -64,7 +64,7 @@ public class ProjectSelection extends ModalDialog<ProjectInfo> {
     private Button browseButton = FXUIUtils.createButton("browse", "Browse project", true, "Browse");
     private Button deleteButton = FXUIUtils.createButton("delete", "Delete project", false, "Delete");
     private Button cancelButton = FXUIUtils.createButton("cancel", "Cancel", true, "Cancel");
-    private Button selectButton = FXUIUtils.createButton("ok", "Select project", true, "Select");;
+    private Button selectButton = FXUIUtils.createButton("ok", "Select project", true, "Run");;
     private ButtonBarX buttonBar = new ButtonBarX();
 
     private ObservableList<ProjectInfo> projects;

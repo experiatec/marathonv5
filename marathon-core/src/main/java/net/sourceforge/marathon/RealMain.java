@@ -177,7 +177,21 @@ public class RealMain {
         OSUtils.setLogConfiguration(projectDir);
         Injector injector = GuiceInjector.get();
         final DisplayWindow display = injector.getInstance(DisplayWindow.class);
-//        display.setVisible(true);
+        //display.setVisible(true);
+        display.onEt();
+    }
+    
+    public static void runGUI() {
+        String projectDir = getProjectDirectory(argProcessor.getProjectDirectory());
+        if (projectDir == null) {
+            System.exit(0);
+        }
+        processMPF(projectDir, false);
+        initializeInjector();
+        OSUtils.setLogConfiguration(projectDir);
+        Injector injector = GuiceInjector.get();
+        final DisplayWindow display = injector.getInstance(DisplayWindow.class);
+        //display.setVisible(true);
         display.onEt();
     }
 
