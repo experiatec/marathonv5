@@ -39,7 +39,7 @@ public class WaitMessageDialog {
 
     public static final Logger LOGGER = Logger.getLogger(WaitMessageDialog.class.getName());
 
-    private static final String DEFAULT_MESSAGE = "This window closes once Marathon is ready for recording";
+    private static final String DEFAULT_MESSAGE = "This window closes once Stela Inspector is ready for recording";
     private static MessageDialog _instance;
 
     private static class MessageDialog extends Stage {
@@ -64,9 +64,9 @@ public class WaitMessageDialog {
             messageLabel.setMaxWidth(Double.MAX_VALUE);
 
             // Bind the timerLabel text property to the timeSeconds property
-            timerLabel.setStyle("-fx-font-size: 2em");
-            timerLabel.textProperty().bind(timeSeconds.asString());
-            timerLabel.setTextFill(Color.RED);
+//            timerLabel.setStyle("-fx-font-size: 2em");
+//            timerLabel.textProperty().bind(timeSeconds.asString());
+//            timerLabel.setTextFill(Color.RED);
 
             VBox vbox = new VBox(FXUIUtils.getImage("wait"), messageLabel);
 

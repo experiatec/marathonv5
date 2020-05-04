@@ -57,6 +57,7 @@ import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
@@ -1042,7 +1043,7 @@ public class DisplayWindow extends Stage implements INameValidateChecker, IResou
 
         public ControllerStage(DisplayWindow stage) {
             this.displayWindow = stage;
-            setTitle("Marathon Control Center");
+            setTitle("Stela Terminal Inspector");
             getIcons().add(FXUIUtils.getImageURL("logo16"));
             getIcons().add(FXUIUtils.getImageURL("logo32"));
             initComponents();
@@ -1062,15 +1063,19 @@ public class DisplayWindow extends Stage implements INameValidateChecker, IResou
             toolBar.setId("controller-toolbar");
             toolBar.setOrientation(javafx.geometry.Orientation.VERTICAL);
             this.displayWindow.rawRecordButton = this.displayWindow.rawRecordAction.getToggleButton();
+            toolBar.setPadding(new Insets(0,5,5,5));
             toolBar.getItems().addAll(
                     this.displayWindow.getActionButton(this.displayWindow.stopAction));
+            textArea.setText("Seleccione un elemento para obtener sus propiedades.");
             textArea.setId("textArea");
             textArea.setEditable(false);
             textArea.setStyle(
-                    "-fx-background-color: black;-fx-control-inner-background: black;-fx-text-inner-color: rgb(0, 250, 0);-fx-text-fill: rgb(0, 250, 0);-fx-font: normal 16px monospace;");
+                    "-fx-background-color: black;-fx-control-inner-background: white;-fx-text-inner-color: rgb(33, 33, 33);-fx-text-fill: rgb(33, 33, 33);-fx-font: normal 16px monospace;");
+          
             HBox top = new HBox();
             top.getChildren().add(toolBar);
             top.getChildren().add(textArea);
+            top.setPadding(new Insets(5, 5, 0, 0));
             content.getChildren().addAll(top, msgLabel);
         }
 
