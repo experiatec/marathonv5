@@ -15,10 +15,18 @@
  ******************************************************************************/
 package net.sourceforge.marathon.runtime.ws;
 
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
+import java.util.Properties;
 import java.util.logging.Logger;
 
 import org.java_websocket.WebSocket;
@@ -42,7 +50,8 @@ public abstract class WSRecordingServer extends WebSocketServer implements IReco
 
     public static final Logger LOGGER = Logger.getLogger(WSRecordingServer.class.getName());
     public static String COMMENT_PREFIX = "# ";
-
+	List<String> propertiesToUse = null;
+	
     private static class MenuItemScriptElement implements IScriptElement {
         private static final long serialVersionUID = 1L;
         private String type;
@@ -343,40 +352,50 @@ public abstract class WSRecordingServer extends WebSocketServer implements IReco
 
     public JSONObject record(WebSocket conn, JSONObject query) throws IOException {
         LOGGER.info("WSRecordingServer.record(" + query.toString(2) + ")");
+        
+        JSONObject queryAttributes = query.getJSONObject("attributes");
+        JSONObject attributes = new JSONObject();
+        
+        getJSONPropertiesToUse().stream().filter(p -> queryAttributes.has(p)).forEach(p -> attributes.put(p, queryAttributes.get(p)));
+
+        StringSelection stringSelection = new StringSelection(attributes.toString(2));
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(stringSelection, null);
+
         if (recorder == null) {
             return new JSONObject();
         }
         try {
-            JSONObject eventObject = query.getJSONObject("event");
-            String type = eventObject.getString("type");
-            if (type.equals("log")) {
-                System.out.println(eventObject.get("message"));
-                return new JSONObject();
-            }
-            if (type.equals("comment")) {
-                recorder.record(new CommentScriptElement(eventObject.getString("comment")));
-                return new JSONObject();
-            }
-            if (type.equals("select_file_dialog")) {
-                recorder.record(new FileDialogScriptElement(query.getJSONObject("event")));
-                return new JSONObject();
-            }
-            if (type.equals("select_file_chooser") || type.equals("select_folder_chooser")) {
-                recorder.record(new ChooserScriptElement(query.getJSONObject("event")));
-                return new JSONObject();
-            } else if (type.equals("select_fx_menu")) {
-                WindowId windowId = createWindowId(query.getJSONObject("container"));
-                recorder.record(new MenuItemScriptElement(query.getJSONObject("event"), windowId));
-                return new JSONObject();
-            }
-            if (type.equals("window_closing_with_title")) {
-                recorder.record(new WindowClosingScriptElement(query.getJSONObject("event")));
-                return new JSONObject();
-            }
-            if (type.equals("window_state_with_title")) {
-                recorder.record(new WindowStateScriptElement(query.getJSONObject("event")));
-                return new JSONObject();
-            }
+//            JSONObject eventObject = query.getJSONObject("event");
+//            String type = eventObject.getString("type");
+//            if (type.equals("log")) {
+//                System.out.println(eventObject.get("message"));
+//                return new JSONObject();
+//            }
+//            if (type.equals("comment")) {
+//                recorder.record(new CommentScriptElement(eventObject.getString("comment")));
+//                return new JSONObject();
+//            }
+//            if (type.equals("select_file_dialog")) {
+//                recorder.record(new FileDialogScriptElement(query.getJSONObject("event")));
+//                return new JSONObject();
+//            }
+//            if (type.equals("select_file_chooser") || type.equals("select_folder_chooser")) {
+//                recorder.record(new ChooserScriptElement(query.getJSONObject("event")));
+//                return new JSONObject();
+//            } else if (type.equals("select_fx_menu")) {
+//                WindowId windowId = createWindowId(query.getJSONObject("container"));
+//                recorder.record(new MenuItemScriptElement(query.getJSONObject("event"), windowId));
+//                return new JSONObject();
+//            }
+//            if (type.equals("window_closing_with_title")) {
+//                recorder.record(new WindowClosingScriptElement(query.getJSONObject("event")));
+//                return new JSONObject();
+//            }
+//            if (type.equals("window_state_with_title")) {
+//                recorder.record(new WindowStateScriptElement(query.getJSONObject("event")));
+//                return new JSONObject();
+//            }
             String name = null;
             try {
                 name = query.getJSONObject("attributes").getString("suggestedName");
@@ -384,7 +403,7 @@ public abstract class WSRecordingServer extends WebSocketServer implements IReco
             }
             String cName = getName(query, name);
             WindowId windowId = createWindowId(query.getJSONObject("container"));
-            recorder.record(new JSONScriptElement(windowId, cName, query.getJSONObject("event")));
+            recorder.record(new JSONScriptElement(windowId, cName, attributes));
         } catch (JSONException je) {
             je.printStackTrace();
             System.err.println(query.toString(2));
@@ -442,6 +461,7 @@ public abstract class WSRecordingServer extends WebSocketServer implements IReco
     }
 
     public void reopened(WebSocket conn, JSONObject query) {
+    	System.out.println("ON reOPEN!!!!");
         post(conn, "setContextMenuTriggers", getContextMenuTriggers().toString());
         post(conn, "setObjectMapConfig", getObjectMapConfiguration().toString());
     }
@@ -606,4 +626,30 @@ public abstract class WSRecordingServer extends WebSocketServer implements IReco
         }
     }
 
+    /**
+     * 
+     * @return The list of properties to copy to the clipboard.
+     */
+	private List<String> getJSONPropertiesToUse() {
+		if (this.propertiesToUse == null) {
+			try (InputStream input = WSRecordingServer.class.getClassLoader()
+					.getResourceAsStream("stb-config.properties")) {
+				this.propertiesToUse = new ArrayList<>();
+				Properties prop = new Properties();
+
+				if (input == null) {
+					LOGGER.warning("Sorry, unable to find stb-config.properties");
+					return null;
+				}
+
+				// load a properties file from class path, inside static method
+				prop.load(input);
+				this.propertiesToUse.addAll(Arrays.asList(prop.getProperty("obj.properties").split(",")));
+			} catch (IOException ex) {
+				LOGGER.warning("An errro has occurred while reading stb-config.properties");
+				throw new RuntimeException(ex);
+			}
+		}
+		return this.propertiesToUse;
+	}
 }

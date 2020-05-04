@@ -41,7 +41,7 @@ goto end
 :batch
 ECHO changing the console to UTF8
 chcp 65001
-java -Dfile.encoding=utf8 -cp "%MARATHONHOME%/UserLibs/*;%MARATHON_EXTRA_JARS%;%MARATHONHOME%/$marathonJar" net.sourceforge.marathon.Main %1 %2 %3 %4 %5 %6 %7 %8 %9
+java -Dfile.encoding=utf8 -cp "%MARATHONHOME%/UserLibs/*;%MARATHONHOME%/;%MARATHON_EXTRA_JARS%;%MARATHONHOME%/$marathonJar" net.sourceforge.marathon.Main %1 %2 %3 %4 %5 %6 %7 %8 %9
 goto :end
 
 :nodist

@@ -50,15 +50,10 @@ public class ScriptRecorder implements IRecorder {
         @Override
         public void run() {
             RecordEvent evt;
-
+            tagInserter = new TagInserter();
             while ((evt = recordEvents.poll()) != null) {
                 IScriptElement recordable = evt.getRecordable();
-                WindowId windowId = recordable.getWindowId();
-                if (windowId == null) {
-                    tagInserter.add(recordable);
-                } else {
-                    windowId.addToTagInserter(tagInserter, recordable);
-                }
+                tagInserter.add(recordable);
                 updateScript();
             }
         }
