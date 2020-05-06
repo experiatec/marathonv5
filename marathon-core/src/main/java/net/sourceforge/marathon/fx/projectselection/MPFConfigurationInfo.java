@@ -94,7 +94,7 @@ public class MPFConfigurationInfo {
         Properties propsFromPanels = getProperties(layouts);
         File projectDir = new File(propsFromPanels.getProperty(Constants.PROP_PROJECT_DIR));
         createMarathonDirectories(propsFromPanels);
-        createDefaultFixture(propsFromPanels, new File(projectDir, Constants.DIR_FIXTURES));
+//        createDefaultFixture(propsFromPanels, new File(projectDir, Constants.DIR_FIXTURES));
         MPFUtils.convertPathChar(propsFromPanels);
         copyMarathonDirProperties(propsFromPanels);
         try {

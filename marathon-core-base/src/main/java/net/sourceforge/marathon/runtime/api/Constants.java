@@ -155,6 +155,8 @@ public class Constants {
     public static final String FRAMEWORK_WEB = "web";
     public static final String PROP_BROWSER = "marathon.browser";
     private static String framework;
+	public static final String PROP_APPLICATION_WINDOW_TITLE = "marathon.application.window.title";
+	public static final String PROP_APPLICATION_JAR_FILE = "marathon.application.jar.file";
 
     public static InputStream getOMapConfigurationStream(String framework) {
         URL resource = Constants.class
