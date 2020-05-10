@@ -94,7 +94,7 @@ public class MPFConfigurationInfo {
         Properties propsFromPanels = getProperties(layouts);
         File projectDir = new File(propsFromPanels.getProperty(Constants.PROP_PROJECT_DIR));
         createMarathonDirectories(propsFromPanels);
-//        createDefaultFixture(propsFromPanels, new File(projectDir, Constants.DIR_FIXTURES));
+        createDefaultFixture(propsFromPanels, new File(projectDir, Constants.DIR_FIXTURES));
         MPFUtils.convertPathChar(propsFromPanels);
         copyMarathonDirProperties(propsFromPanels);
         try {
@@ -188,7 +188,7 @@ public class MPFConfigurationInfo {
             if (getLauncherModel() == null) {
                 return;
             }
-            getSelectedScriptModel(props.getProperty(Constants.PROP_PROJECT_SCRIPT_MODEL)).createDefaultFixture(props, fixtureDir,
+            getSelectedScriptModel("net.sourceforge.marathon.ruby.RubyScriptModel").createDefaultFixture(props, fixtureDir,
                     getLauncherModel().getPropertyKeys());
         } catch (ClassNotFoundException e1) {
             e1.printStackTrace();

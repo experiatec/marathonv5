@@ -24,6 +24,7 @@ import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import net.sourceforge.marathon.fx.api.FXUIUtils;
@@ -35,30 +36,26 @@ import net.sourceforge.marathon.runtime.fx.api.IFileSelectedAction;
 import net.sourceforge.marathon.runtime.fx.api.IPropertiesLayout;
 import net.sourceforge.marathon.runtime.fx.api.ISubPropertiesLayout;
 
-public class ExecutableJarLauncherLayout implements ISubPropertiesLayout, IFileSelectedAction, IPropertiesLayout {
+public class WebStartLauncherLayout implements ISubPropertiesLayout, IFileSelectedAction, IPropertiesLayout {
 
-    public static final Logger LOGGER = Logger.getLogger(ExecutableJarLauncherLayout.class.getName());
+    public static final Logger LOGGER = Logger.getLogger(WebStartLauncherLayout.class.getName());
 
     private ModalDialog<?> parent;
-    private TextField jarfileField = new TextField();
+    private TextField urlField = new TextField();
     private TextField windowTitle = new TextField();
-    private TextArea programArgumentsField = new TextArea();
     private TextArea vmArgumentsField = new TextArea();
-    private TextField workingDirField = new TextField() {
-        @Override
-        public void requestFocus() {
-        };
-    };
+    private TextArea webstartOptionsField = new TextArea();
+    private CheckBox nosplashCheck = new CheckBox();
+    private CheckBox offlineCheck = new CheckBox();
     private TextField javaHomeField = new TextField() {
         @Override
         public void requestFocus() {
         };
     };
-    private Button jarfileDirBrowse = FXUIUtils.createButton("browse", "Browse jar file", true, "Browse");
-    private Button workindDirBrowse = FXUIUtils.createButton("browse", "Browse working dir", true, "Browse");
+    private Button urlDirBrowse = FXUIUtils.createButton("browse", "Browse JNLP file", true, "Browse");
     private Button javaHomeBrowse = FXUIUtils.createButton("browse", "Browse java home", true, "Browse");
 
-    public ExecutableJarLauncherLayout(ModalDialog<?> parent) {
+    public WebStartLauncherLayout(ModalDialog<?> parent) {
         this.parent = parent;
         iniComponents();
     }
@@ -67,11 +64,12 @@ public class ExecutableJarLauncherLayout implements ISubPropertiesLayout, IFileS
     public Node getContent() {
         FormPane form = new FormPane("main-layout", 3);
         // @formatter:off
-            form.addFormField("Jar File: ", jarfileField, jarfileDirBrowse)
-	            .addFormField("Working Directory: ", workingDirField, workindDirBrowse)
+            form.addFormField("URL/File: ", urlField, urlDirBrowse)
 	            .addFormField("Window Title: ", windowTitle)
-                .addFormField("Program Arguments: ", programArgumentsField)
-                .addFormField("VM Arguments: ", vmArgumentsField)
+	            .addFormField("VM Arguments: ", vmArgumentsField)
+	            .addFormField("Webstart Options: ", webstartOptionsField)
+	            .addFormField("No Splash: ", nosplashCheck)
+	            .addFormField("Offline: ", offlineCheck)
                 .addFormField("Java Home: ", javaHomeField, javaHomeBrowse);
         // @formatter:on
         return form;
@@ -79,17 +77,11 @@ public class ExecutableJarLauncherLayout implements ISubPropertiesLayout, IFileS
     }
 
     private void iniComponents() {
-    	jarfileField.setEditable(false);
-        FileSelectionHandler jarfileDirHandler = new FileSelectionHandler(this, null, parent, jarfileField,
-                "Select a Jar File");
-        jarfileDirHandler.setMode(FileSelectionHandler.FILE_CHOOSER);
-        jarfileDirBrowse.setOnAction(jarfileDirHandler);
-        
-        workingDirField.setEditable(false);
-        FileSelectionHandler workingDirHandler = new FileSelectionHandler(this, null, parent, workingDirField,
-                "Select Working Directory");
-        workingDirHandler.setMode(FileSelectionHandler.DIRECTORY_CHOOSER);
-        workindDirBrowse.setOnAction(workingDirHandler);
+    	urlField.setEditable(true);
+        FileSelectionHandler urlDirHandler = new FileSelectionHandler(this, null, parent, urlField,
+                "Select a JNLP File");
+        urlDirHandler.setMode(FileSelectionHandler.FILE_CHOOSER);
+        urlDirBrowse.setOnAction(urlDirHandler);
 
         javaHomeField.setEditable(false);
         FileSelectionHandler javaHomeHandler = new FileSelectionHandler(this, null, parent, javaHomeField,
@@ -111,31 +103,33 @@ public class ExecutableJarLauncherLayout implements ISubPropertiesLayout, IFileS
 
     @Override
     public void getProperties(Properties props) {
-        props.setProperty(Constants.PROP_APPLICATION_JAR_FILE, jarfileField.getText());
+        props.setProperty(Constants.PROP_APPLICATION_WEBSTART_JNLP_LOCATION, urlField.getText());
         props.setProperty(Constants.PROP_APPLICATION_WINDOW_TITLE, windowTitle.getText());
-        props.setProperty(Constants.PROP_APPLICATION_ARGUMENTS, programArgumentsField.getText().trim());
         props.setProperty(Constants.PROP_APPLICATION_VM_ARGUMENTS, vmArgumentsField.getText().trim());
+        props.setProperty(Constants.PROP_APPLICATION_WEBSTART_OPTIONS, webstartOptionsField.getText().trim());
         props.setProperty(Constants.PROP_APPLICATION_JAVA_HOME, javaHomeField.getText());
-        props.setProperty(Constants.PROP_APPLICATION_WORKING_DIR, workingDirField.getText());
+        props.setProperty(Constants.PROP_APPLICATION_WEBSTART_NOSPLASH, nosplashCheck.isSelected() ? "true" : "false");
+        props.setProperty(Constants.PROP_APPLICATION_WEBSTART_OFFLINE, offlineCheck.isSelected() ? "true" : "false");
     }
 
     @Override
     public void setProperties(Properties props) {
-        jarfileField.setText(props.getProperty(Constants.PROP_APPLICATION_JAR_FILE, ""));
+        urlField.setText(props.getProperty(Constants.PROP_APPLICATION_WEBSTART_JNLP_LOCATION, ""));
         windowTitle.setText(props.getProperty(Constants.PROP_APPLICATION_WINDOW_TITLE, ""));
-        programArgumentsField.setText(props.getProperty(Constants.PROP_APPLICATION_ARGUMENTS, ""));
         vmArgumentsField.setText(props.getProperty(Constants.PROP_APPLICATION_VM_ARGUMENTS, ""));
+        webstartOptionsField.setText(props.getProperty(Constants.PROP_APPLICATION_WEBSTART_OPTIONS, ""));
         javaHomeField.setText(props.getProperty(Constants.PROP_APPLICATION_JAVA_HOME, ""));
-        workingDirField.setText(props.getProperty(Constants.PROP_APPLICATION_WORKING_DIR, ""));
+        nosplashCheck.setSelected(Boolean.valueOf(props.getProperty(Constants.PROP_APPLICATION_WEBSTART_NOSPLASH, "")));
+        offlineCheck.setSelected(Boolean.valueOf(props.getProperty(Constants.PROP_APPLICATION_WEBSTART_OFFLINE, "")));
     }
 
     @Override
     public boolean isValidInput(boolean showAlert) {
-        if (jarfileField.getText() == null || jarfileField.getText().equals("")) {
+        if (urlField.getText() == null || urlField.getText().equals("")) {
             if (showAlert) {
-                FXUIUtils.showMessageDialog(parent.getStage(), "Jar file can't be empty", "Jar File", AlertType.ERROR);
+                FXUIUtils.showMessageDialog(parent.getStage(), "JNLP file can't be empty", "Jar File", AlertType.ERROR);
             }
-            Platform.runLater(() -> jarfileField.requestFocus());
+            Platform.runLater(() -> urlField.requestFocus());
             return false;
         }
 //        if (!ValidationUtil.isValidClassName(jarfileField.getText())) {
@@ -161,12 +155,12 @@ public class ExecutableJarLauncherLayout implements ISubPropertiesLayout, IFileS
 //                return false;
 //            }
 //        }
-        if (programArgumentsField.getText().indexOf('\n') != -1 || programArgumentsField.getText().indexOf('\r') != -1) {
+        if (webstartOptionsField.getText().indexOf('\n') != -1 || webstartOptionsField.getText().indexOf('\r') != -1) {
             if (showAlert) {
-                FXUIUtils.showMessageDialog(parent.getStage(), "Can not have new lines in Program Arguments", "Program Arguments",
+                FXUIUtils.showMessageDialog(parent.getStage(), "Can not have new lines in Program Arguments", "Webstart Options",
                         AlertType.ERROR);
             }
-            Platform.runLater(() -> programArgumentsField.requestFocus());
+            Platform.runLater(() -> webstartOptionsField.requestFocus());
             return false;
         }
         if (vmArgumentsField.getText().indexOf('\n') != -1 || vmArgumentsField.getText().indexOf('\r') != -1) {

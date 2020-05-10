@@ -272,6 +272,7 @@ public class RealMain {
             projectDir = file.getCanonicalPath();
             System.setProperty(Constants.PROP_PROJECT_DIR, projectDir);
             Properties mpfProps = ProjectFile.getProjectProperties();
+            mpfProps.setProperty(Constants.PROP_PROJECT_SCRIPT_MODEL, "net.sourceforge.marathon.ruby.RubyScriptModel");
             checkForScriptModel(projectDir, mpfProps, batchMode);
             MPFUtils.convertPathChar(mpfProps);
             MPFUtils.replaceEnviron(mpfProps);

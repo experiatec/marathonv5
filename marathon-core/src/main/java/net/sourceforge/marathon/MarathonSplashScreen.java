@@ -93,7 +93,7 @@ public class MarathonSplashScreen extends ModalDialog<MarathonSplashScreenInfo> 
             licensee.put("License Type", "Trial");
             licensee.put("Expires", "18/10/2018");
 
-            VersionInfo versionInfo = new VersionInfo("4.1.2.0", "Marathon GUI Testing Tool (Java/Swing) (Opensource version)",
+            VersionInfo versionInfo = new VersionInfo("4.1.2.0", "Stela Inspector Testing Tool (Java/Swing) (Opensource version)",
                     "� Jalian Systems Private Ltd. and Other contributors",
                     "Visit our website: http://www.marathontesting.com for details",
                     "Marathon uses other OSS projects. See Credits for more information.");

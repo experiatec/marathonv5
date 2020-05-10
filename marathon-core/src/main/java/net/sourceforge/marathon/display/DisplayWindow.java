@@ -1043,7 +1043,7 @@ public class DisplayWindow extends Stage implements INameValidateChecker, IResou
 
         public ControllerStage(DisplayWindow stage) {
             this.displayWindow = stage;
-            setTitle("Stela Terminal Inspector");
+            setTitle("Stela Inspector");
             getIcons().add(FXUIUtils.getImageURL("logo16"));
             getIcons().add(FXUIUtils.getImageURL("logo32"));
             initComponents();

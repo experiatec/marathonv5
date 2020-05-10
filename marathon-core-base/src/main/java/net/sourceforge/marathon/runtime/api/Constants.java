@@ -157,7 +157,13 @@ public class Constants {
     private static String framework;
 	public static final String PROP_APPLICATION_WINDOW_TITLE = "marathon.application.window.title";
 	public static final String PROP_APPLICATION_JAR_FILE = "marathon.application.jar.file";
-
+	public static final String PROP_APPLICATION_WEBSTART_OPTIONS = "marathon.application.webstart.options";
+	public static final String PROP_APPLICATION_WEBSTART_JNLP_LOCATION = "marathon.application.webstart.jnlp.location";
+	public static final String PROP_APPLICATION_WEBSTART_OFFLINE = "marathon.application.webstart.offline";
+	public static final String PROP_APPLICATION_WEBSTART_NOSPLASH = "marathon.application.webstart.nosplash";
+	public static final String PROP_APPLICATION_APPLET_URL_FILE = "marathon.application.applet.url.file";
+	public static final String PROP_APPLICATION_COMMAND_BATCH_SCRIPT = "marathon.application.command.batch.script";
+	
     public static InputStream getOMapConfigurationStream(String framework) {
         URL resource = Constants.class
                 .getResource("/net/sourceforge/marathon/objectmap/default-omap-configuration-" + framework + ".yaml");

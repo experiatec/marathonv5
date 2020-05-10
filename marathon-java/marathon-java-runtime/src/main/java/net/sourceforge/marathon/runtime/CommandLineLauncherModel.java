@@ -30,10 +30,10 @@ import net.sourceforge.marathon.runtime.api.IRuntimeFactory;
 import net.sourceforge.marathon.runtime.api.IRuntimeLauncherModel;
 import net.sourceforge.marathon.runtime.fx.api.ISubPropertiesLayout;
 
-public class ExecutableJarLauncherModel extends AbstractJavaDriverRuntimeLauncherModel
+public class CommandLineLauncherModel extends AbstractJavaDriverRuntimeLauncherModel
         implements IRuntimeLauncherModel, IJavaDriverRuntimeLauncherModel {
 
-    public static final Logger LOGGER = Logger.getLogger(ExecutableJarLauncherModel.class.getName());
+    public static final Logger LOGGER = Logger.getLogger(CommandLineLauncherModel.class.getName());
 
     @Override
     public List<String> getPropertyKeys() {
@@ -43,7 +43,7 @@ public class ExecutableJarLauncherModel extends AbstractJavaDriverRuntimeLaunche
         		Constants.PROP_APPLICATION_ARGUMENTS,
         		Constants.PROP_APPLICATION_WORKING_DIR, 
         		Constants.PROP_APPLICATION_WINDOW_TITLE, 
-                Constants.PROP_APPLICATION_JAR_FILE);
+                Constants.PROP_APPLICATION_COMMAND_BATCH_SCRIPT);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class ExecutableJarLauncherModel extends AbstractJavaDriverRuntimeLaunche
 
     @Override
     public JavaProfile createProfile(Map<String, Object> props, MarathonMode mode) {
-        JavaProfile profile = new JavaProfile(LaunchMode.EXECUTABLE_JAR);
+        JavaProfile profile = new JavaProfile(LaunchMode.COMMAND_LINE);
         String javaHome = (String) props.get(Constants.PROP_APPLICATION_JAVA_HOME);
         if (javaHome != null && !javaHome.equals("")) {
             profile.setJavaHome(javaHome);
@@ -87,9 +87,9 @@ public class ExecutableJarLauncherModel extends AbstractJavaDriverRuntimeLaunche
         if (windowTitle != null && !"".equals(windowTitle)) {
             profile.setStartWindowTitle(windowTitle);
         }
-        String jarfile = (String) props.get(Constants.PROP_APPLICATION_JAR_FILE);
-        if (jarfile != null && !"".equals(jarfile)) {
-            profile.setExecutableJar(jarfile);
+        String commandBatchScript = (String) props.get(Constants.PROP_APPLICATION_COMMAND_BATCH_SCRIPT);
+        if (commandBatchScript != null && !"".equals(commandBatchScript)) {
+            profile.setCommand(commandBatchScript);
         }  
         return profile;
     }
@@ -97,7 +97,7 @@ public class ExecutableJarLauncherModel extends AbstractJavaDriverRuntimeLaunche
     @Override
     public ISubPropertiesLayout[] getSublayouts(ModalDialog<?> parent) {
     	// Tab panels
-        return new ISubPropertiesLayout[] { new ExecutableJarLauncherLayout(parent) };
+        return new ISubPropertiesLayout[] { new CommandLineLauncherLayout(parent) };
     }
 
     @Override

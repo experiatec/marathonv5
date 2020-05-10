@@ -21,6 +21,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import org.parboiled.common.StringUtils;
+
 import net.sourceforge.marathon.fx.api.ModalDialog;
 import net.sourceforge.marathon.javadriver.JavaProfile;
 import net.sourceforge.marathon.javadriver.JavaProfile.LaunchMode;
@@ -30,20 +32,19 @@ import net.sourceforge.marathon.runtime.api.IRuntimeFactory;
 import net.sourceforge.marathon.runtime.api.IRuntimeLauncherModel;
 import net.sourceforge.marathon.runtime.fx.api.ISubPropertiesLayout;
 
-public class ExecutableJarLauncherModel extends AbstractJavaDriverRuntimeLauncherModel
+public class AppletLauncherModel extends AbstractJavaDriverRuntimeLauncherModel
         implements IRuntimeLauncherModel, IJavaDriverRuntimeLauncherModel {
 
-    public static final Logger LOGGER = Logger.getLogger(ExecutableJarLauncherModel.class.getName());
+    public static final Logger LOGGER = Logger.getLogger(AppletLauncherModel.class.getName());
 
     @Override
     public List<String> getPropertyKeys() {
         return Arrays.asList(
-        		Constants.PROP_APPLICATION_JAVA_HOME,
+        		Constants.PROP_APPLICATION_APPLET_URL_FILE,
+        		Constants.PROP_APPLICATION_WINDOW_TITLE,
         		Constants.PROP_APPLICATION_VM_ARGUMENTS, 
-        		Constants.PROP_APPLICATION_ARGUMENTS,
-        		Constants.PROP_APPLICATION_WORKING_DIR, 
-        		Constants.PROP_APPLICATION_WINDOW_TITLE, 
-                Constants.PROP_APPLICATION_JAR_FILE);
+                Constants.PROP_APPLICATION_JAVA_HOME
+        		);
     }
 
     @Override
@@ -53,11 +54,18 @@ public class ExecutableJarLauncherModel extends AbstractJavaDriverRuntimeLaunche
 
     @Override
     public JavaProfile createProfile(Map<String, Object> props, MarathonMode mode) {
-        JavaProfile profile = new JavaProfile(LaunchMode.EXECUTABLE_JAR);
-        String javaHome = (String) props.get(Constants.PROP_APPLICATION_JAVA_HOME);
-        if (javaHome != null && !javaHome.equals("")) {
-            profile.setJavaHome(javaHome);
+        JavaProfile profile = new JavaProfile(LaunchMode.JAVA_APPLET);
+
+        String appletURLFile = (String) props.get(Constants.PROP_APPLICATION_APPLET_URL_FILE);
+        if (appletURLFile != null && !"".equals(appletURLFile)) {
+            profile.setAppletURL(appletURLFile);
+        } 
+
+        String windowTitle = (String) props.get(Constants.PROP_APPLICATION_WINDOW_TITLE);
+        if (windowTitle != null && !"".equals(windowTitle)) {
+            profile.setStartWindowTitle(windowTitle);
         }
+        
         System.setProperty("marathon.mode", mode == MarathonMode.RECORDING ? "record" : "other");
         String vmArgs = (String) props.get(Constants.PROP_APPLICATION_VM_ARGUMENTS);
         if (vmArgs != null && !vmArgs.equals("")) {
@@ -65,6 +73,7 @@ public class ExecutableJarLauncherModel extends AbstractJavaDriverRuntimeLaunche
             List<String> args = p.parseArguments();
             profile.addVMArgument(args.toArray(new String[args.size()]));
         }
+        
         Set<String> keySet = props.keySet();
         for (String key : keySet) {
             if (key.startsWith(Constants.PROP_PROPPREFIX)) {
@@ -72,32 +81,27 @@ public class ExecutableJarLauncherModel extends AbstractJavaDriverRuntimeLaunche
                 profile.addVMArgument("-D" + key.substring(prefixLength) + "=" + props.get(key).toString());
             }
         }
-
-        String args = (String) props.get(Constants.PROP_APPLICATION_ARGUMENTS);
-        if (!args.equals("")) {
-            ArgumentProcessor p = new ArgumentProcessor(args);
-            List<String> appArgs = p.parseArguments();
-            profile.addApplicationArguments(appArgs.toArray(new String[appArgs.size()]));
+        
+        // Add security configuration to allow Marathon agents to run
+        // It is also possible to pass this variable through Marathon Project Config or set it 
+        // by editing java.policy system wide file (javahome>/lib/security) but it is not advisable to do it.
+        String javaPolicyFilePath = STBConfigReader.getInstance().getSTBConfigProperties().getProperty("java.security.policy");
+        if (StringUtils.isNotEmpty(javaPolicyFilePath)) {
+        	profile.addVMArgument("-Djava.security.policy=" + WebStartLauncherModel.getJavaPolicyFilePath());
+		}
+        
+        String javaHome = (String) props.get(Constants.PROP_APPLICATION_JAVA_HOME);
+        if (javaHome != null && !javaHome.equals("")) {
+            profile.setJavaHome(javaHome);
         }
-        String workingDir = (String) props.get(Constants.PROP_APPLICATION_WORKING_DIR);
-        if (workingDir != null && !"".equals(workingDir)) {
-            profile.setWorkingDirectory(workingDir);
-        }
-        String windowTitle = (String) props.get(Constants.PROP_APPLICATION_WINDOW_TITLE);
-        if (windowTitle != null && !"".equals(windowTitle)) {
-            profile.setStartWindowTitle(windowTitle);
-        }
-        String jarfile = (String) props.get(Constants.PROP_APPLICATION_JAR_FILE);
-        if (jarfile != null && !"".equals(jarfile)) {
-            profile.setExecutableJar(jarfile);
-        }  
+        
         return profile;
     }
 
     @Override
     public ISubPropertiesLayout[] getSublayouts(ModalDialog<?> parent) {
     	// Tab panels
-        return new ISubPropertiesLayout[] { new ExecutableJarLauncherLayout(parent) };
+        return new ISubPropertiesLayout[] { new AppletLauncherLayout(parent) };
     }
 
     @Override

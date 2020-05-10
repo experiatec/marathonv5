@@ -44,6 +44,7 @@ public class LaunchWebStartTest {
         File f = findFile();
         profile.setJNLPPath(f.getAbsolutePath());
         profile.setStartWindowTitle(title);
+        profile.addWSArgument("-J-Djava.security.policy=/home/glopez/dev/stb/javaws.policy");
         driver = new JavaDriver(profile);
     }
 
@@ -99,7 +100,7 @@ public class LaunchWebStartTest {
     }
 
     private static File findFile() {
-        File f = new File(System.getProperty("SwingSet3.jnlp", "../marathon-test-helpers/swingset3/SwingSet3.jnlp"));
+        File f = new File(System.getProperty("AccessibleScrollDemo.jnlp", "/home/glopez/Downloads/AccessibleScrollDemo.jnlp"));
         if (f.exists()) {
             return f;
         }
@@ -112,6 +113,7 @@ public class LaunchWebStartTest {
         profile.setJNLPPath(f.getAbsolutePath());
         profile.setStartWindowTitle("SwingSet3");
         profile.addVMArgument("-Dhello=world");
+        profile.addWSArgument("-J-Djava.security.policy=/home/glopez/dev/stb/javaws.policy");
         CommandLine commandLine = profile.getCommandLine();
         System.out.println(commandLine);
         AssertJUnit.assertTrue(commandLine.toString().matches(".*JAVA_TOOL_OPTIONS=.*-Dhello=world.*"));
@@ -124,6 +126,7 @@ public class LaunchWebStartTest {
         profile.setJNLPPath(f.getAbsolutePath());
         profile.setStartWindowTitle("SwingSet3");
         profile.addVMArgument("-Dhello=world");
+        profile.addWSArgument("-J-Djava.security.policy=/home/glopez/dev/stb/javaws.policy");
         CommandLine commandLine = profile.getCommandLine();
         String exec = findExecutableOnPath("java");
         AssertJUnit.assertTrue(commandLine.toString(), commandLine.toString().contains(exec));
@@ -161,6 +164,7 @@ public class LaunchWebStartTest {
         File f = findFile();
         profile.setJNLPPath(f.getAbsolutePath());
         profile.setStartWindowTitle("SwingSet3");
+        profile.addWSArgument("-J-Djava.security.policy=/home/glopez/dev/stb/javaws.policy");
         CommandLine commandLine = profile.getCommandLine();
         commandLine.copyOutputTo(System.err);
         System.out.println(commandLine);

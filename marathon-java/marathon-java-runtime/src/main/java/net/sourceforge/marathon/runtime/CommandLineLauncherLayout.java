@@ -35,12 +35,12 @@ import net.sourceforge.marathon.runtime.fx.api.IFileSelectedAction;
 import net.sourceforge.marathon.runtime.fx.api.IPropertiesLayout;
 import net.sourceforge.marathon.runtime.fx.api.ISubPropertiesLayout;
 
-public class ExecutableJarLauncherLayout implements ISubPropertiesLayout, IFileSelectedAction, IPropertiesLayout {
+public class CommandLineLauncherLayout implements ISubPropertiesLayout, IFileSelectedAction, IPropertiesLayout {
 
-    public static final Logger LOGGER = Logger.getLogger(ExecutableJarLauncherLayout.class.getName());
+    public static final Logger LOGGER = Logger.getLogger(CommandLineLauncherLayout.class.getName());
 
     private ModalDialog<?> parent;
-    private TextField jarfileField = new TextField();
+    private TextField commandBatchScriptField = new TextField();
     private TextField windowTitle = new TextField();
     private TextArea programArgumentsField = new TextArea();
     private TextArea vmArgumentsField = new TextArea();
@@ -54,11 +54,11 @@ public class ExecutableJarLauncherLayout implements ISubPropertiesLayout, IFileS
         public void requestFocus() {
         };
     };
-    private Button jarfileDirBrowse = FXUIUtils.createButton("browse", "Browse jar file", true, "Browse");
+    private Button commandBatchScriptDirBrowse = FXUIUtils.createButton("browse", "Browse command/batch script file", true, "Browse");
     private Button workindDirBrowse = FXUIUtils.createButton("browse", "Browse working dir", true, "Browse");
     private Button javaHomeBrowse = FXUIUtils.createButton("browse", "Browse java home", true, "Browse");
 
-    public ExecutableJarLauncherLayout(ModalDialog<?> parent) {
+    public CommandLineLauncherLayout(ModalDialog<?> parent) {
         this.parent = parent;
         iniComponents();
     }
@@ -67,7 +67,7 @@ public class ExecutableJarLauncherLayout implements ISubPropertiesLayout, IFileS
     public Node getContent() {
         FormPane form = new FormPane("main-layout", 3);
         // @formatter:off
-            form.addFormField("Jar File: ", jarfileField, jarfileDirBrowse)
+            form.addFormField("Command/Batch Script: ", commandBatchScriptField, commandBatchScriptDirBrowse)
 	            .addFormField("Working Directory: ", workingDirField, workindDirBrowse)
 	            .addFormField("Window Title: ", windowTitle)
                 .addFormField("Program Arguments: ", programArgumentsField)
@@ -79,11 +79,11 @@ public class ExecutableJarLauncherLayout implements ISubPropertiesLayout, IFileS
     }
 
     private void iniComponents() {
-    	jarfileField.setEditable(false);
-        FileSelectionHandler jarfileDirHandler = new FileSelectionHandler(this, null, parent, jarfileField,
-                "Select a Jar File");
+    	commandBatchScriptField.setEditable(false);
+        FileSelectionHandler jarfileDirHandler = new FileSelectionHandler(this, null, parent, commandBatchScriptField,
+                "Select the Command/Batch Script File");
         jarfileDirHandler.setMode(FileSelectionHandler.FILE_CHOOSER);
-        jarfileDirBrowse.setOnAction(jarfileDirHandler);
+        commandBatchScriptDirBrowse.setOnAction(jarfileDirHandler);
         
         workingDirField.setEditable(false);
         FileSelectionHandler workingDirHandler = new FileSelectionHandler(this, null, parent, workingDirField,
@@ -111,7 +111,7 @@ public class ExecutableJarLauncherLayout implements ISubPropertiesLayout, IFileS
 
     @Override
     public void getProperties(Properties props) {
-        props.setProperty(Constants.PROP_APPLICATION_JAR_FILE, jarfileField.getText());
+        props.setProperty(Constants.PROP_APPLICATION_COMMAND_BATCH_SCRIPT, commandBatchScriptField.getText());
         props.setProperty(Constants.PROP_APPLICATION_WINDOW_TITLE, windowTitle.getText());
         props.setProperty(Constants.PROP_APPLICATION_ARGUMENTS, programArgumentsField.getText().trim());
         props.setProperty(Constants.PROP_APPLICATION_VM_ARGUMENTS, vmArgumentsField.getText().trim());
@@ -121,7 +121,7 @@ public class ExecutableJarLauncherLayout implements ISubPropertiesLayout, IFileS
 
     @Override
     public void setProperties(Properties props) {
-        jarfileField.setText(props.getProperty(Constants.PROP_APPLICATION_JAR_FILE, ""));
+        commandBatchScriptField.setText(props.getProperty(Constants.PROP_APPLICATION_COMMAND_BATCH_SCRIPT, ""));
         windowTitle.setText(props.getProperty(Constants.PROP_APPLICATION_WINDOW_TITLE, ""));
         programArgumentsField.setText(props.getProperty(Constants.PROP_APPLICATION_ARGUMENTS, ""));
         vmArgumentsField.setText(props.getProperty(Constants.PROP_APPLICATION_VM_ARGUMENTS, ""));
@@ -131,36 +131,14 @@ public class ExecutableJarLauncherLayout implements ISubPropertiesLayout, IFileS
 
     @Override
     public boolean isValidInput(boolean showAlert) {
-        if (jarfileField.getText() == null || jarfileField.getText().equals("")) {
+        if (commandBatchScriptField.getText() == null || commandBatchScriptField.getText().equals("")) {
             if (showAlert) {
-                FXUIUtils.showMessageDialog(parent.getStage(), "Jar file can't be empty", "Jar File", AlertType.ERROR);
+                FXUIUtils.showMessageDialog(parent.getStage(), "Command/Batch Script can't be empty", "Command/Batch Script", AlertType.ERROR);
             }
-            Platform.runLater(() -> jarfileField.requestFocus());
+            Platform.runLater(() -> commandBatchScriptField.requestFocus());
             return false;
         }
-//        if (!ValidationUtil.isValidClassName(jarfileField.getText())) {
-//            if (showAlert) {
-//                FXUIUtils.showMessageDialog(parent.getStage(), "Invalid class name given for main class", "Main Class",
-//                        AlertType.ERROR);
-//            }
-//            Platform.runLater(() -> jarfileField.requestFocus());
-//            return false;
-//        }
-//        if (classNameField.getText().indexOf('.') == -1) {
-//            if (showAlert) {
-//                Optional<ButtonType> r = FXUIUtils.showConfirmDialog(parent.getStage(),
-//                        "There is no package given for the main class. You need to give fully qualified class name. Do you want to continue?",
-//                        "Main Class", AlertType.CONFIRMATION, ButtonType.YES, ButtonType.NO);
-//                if (r.get() != ButtonType.YES) {
-//                    Platform.runLater(() -> classNameField.requestFocus());
-//                    return false;
-//                }
-//            }
-//            if (!showAlert) {
-//                Platform.runLater(() -> classNameField.requestFocus());
-//                return false;
-//            }
-//        }
+
         if (programArgumentsField.getText().indexOf('\n') != -1 || programArgumentsField.getText().indexOf('\r') != -1) {
             if (showAlert) {
                 FXUIUtils.showMessageDialog(parent.getStage(), "Can not have new lines in Program Arguments", "Program Arguments",
