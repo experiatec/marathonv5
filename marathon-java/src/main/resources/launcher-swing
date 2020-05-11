@@ -1,6 +1,6 @@
 net.sourceforge.marathon.runtime.SwingBareRuntimeLauncherModel=No Launcher
 net.sourceforge.marathon.runtime.RuntimeLauncherModel=Java Command Line Launcher
 net.sourceforge.marathon.runtime.CommandLineLauncherModel=Command Line Launcher
-net.sourceforge.marathon.runtime.AppletLauncherModel=Applet Launcher
 net.sourceforge.marathon.runtime.WebStartLauncherModel=WebStart Launcher
+net.sourceforge.marathon.runtime.AppletLauncherModel=Applet Launcher
 net.sourceforge.marathon.runtime.ExecutableJarLauncherModel=Executable Jar Launcher
