@@ -353,7 +353,7 @@ public abstract class WSRecordingServer extends WebSocketServer implements IReco
     public JSONObject record(WebSocket conn, JSONObject query) throws IOException {
         LOGGER.info("WSRecordingServer.record(" + query.toString(2) + ")");
         
-        JSONObject queryAttributes = query.getJSONObject("attributes");
+        JSONObject queryAttributes = query.has("attributes") ? query.getJSONObject("attributes") : new JSONObject();
         JSONObject attributes = new JSONObject();
         
         getJSONPropertiesToUse().stream().filter(p -> queryAttributes.has(p)).forEach(p -> attributes.put(p, queryAttributes.get(p)));
