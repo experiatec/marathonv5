@@ -15,6 +15,7 @@
  ******************************************************************************/
 package net.sourceforge.marathon.runtime;
 
+import java.io.File;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
@@ -119,7 +120,7 @@ public class WebStartLauncherModel extends AbstractJavaDriverRuntimeLauncherMode
         // by editing java.policy system wide file (javahome>/lib/security) but it is not advisable to do it.
         String javaPolicyFilePath = STBConfigReader.getInstance().getSTBConfigProperties().getProperty("java.security.policy");
         if (StringUtils.isNotEmpty(javaPolicyFilePath)) {
-        	profile.addWSArgument("-J-Djava.security.policy=" + getJavaPolicyFilePath());
+        	profile.addWSArgument(String.format("-J-Djava.security.policy=%s", getJavaPolicyFilePath()));
 		}
 
         String deploymentSecurityLevel = STBConfigReader.getInstance().getSTBConfigProperties().getProperty("deployment.security.level");
@@ -153,6 +154,7 @@ public class WebStartLauncherModel extends AbstractJavaDriverRuntimeLauncherMode
 			LOGGER.warning("Sorry, unable to find javaws.policy!");
 			throw new RuntimeException("Sorry, unable to find javaws.policy");
 		}
-		return url.getPath();
+		LOGGER.info(String.format("Picking provided policy file: '%s' ", url.getPath()));
+		return new File(url.getFile()).getAbsolutePath();
 	}
 }
