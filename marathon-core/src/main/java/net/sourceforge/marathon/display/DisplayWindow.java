@@ -1102,7 +1102,7 @@ public class DisplayWindow extends Stage implements INameValidateChecker, IResou
                     index = 0;
                 }
             }
-            textArea.setText(text.toString());
+            textArea.appendText(text.toString());
         }
 
         @Override
