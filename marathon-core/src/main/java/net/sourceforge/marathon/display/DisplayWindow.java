@@ -1069,7 +1069,7 @@ public class DisplayWindow extends Stage implements INameValidateChecker, IResou
             textArea.setId("textArea");
             textArea.setEditable(false);
             textArea.setStyle(
-                    "-fx-background-color: black;-fx-control-inner-background: white;-fx-text-inner-color: rgb(33, 33, 33);-fx-text-fill: rgb(33, 33, 33);-fx-font: normal 16px monospace;");
+                    "-fx-background-color: black;-fx-control-inner-background: white;-fx-text-inner-color: rgb(255, 255, 255);-fx-text-fill: rgb(255, 255, 255);-fx-font: normal 16px monospace;");
           
             HBox top = new HBox();
             top.getChildren().add(toolBar);
