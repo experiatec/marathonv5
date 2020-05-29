@@ -265,3 +265,11 @@
 	-fx-font-family: "Segoe MDL2 Assets";
 	-fx-font-size: 16px;
 }
+
+.console {
+    -fx-background-color: -fx-focus-color, black;
+	-fx-control-inner-background: black;
+	-fx-text-inner-color: rgb(255, 255, 255);
+	-fx-text-fill: rgb(255, 255, 255);
+	-fx-font: normal 12px monospace;
+}

@@ -1066,11 +1066,10 @@ public class DisplayWindow extends Stage implements INameValidateChecker, IResou
             toolBar.getItems().addAll(
                     this.displayWindow.getActionButton(this.displayWindow.stopAction));
             textArea.setText("Seleccione un elemento para obtener sus propiedades.");
-            textArea.setId("textArea");
+            textArea.getStyleClass().clear();
+            textArea.getStyleClass().add("console");
+            textArea.setId("console");
             textArea.setEditable(false);
-            textArea.setStyle(
-                    "-fx-background-color: black;-fx-control-inner-background: white;-fx-text-inner-color: rgb(255, 255, 255);-fx-text-fill: rgb(255, 255, 255);-fx-font: normal 16px monospace;");
-          
             HBox top = new HBox();
             top.getChildren().add(toolBar);
             top.getChildren().add(textArea);
