@@ -16,7 +16,9 @@
 package net.sourceforge.marathon.runtime;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -155,6 +157,12 @@ public class WebStartLauncherModel extends AbstractJavaDriverRuntimeLauncherMode
 			throw new RuntimeException("Sorry, unable to find javaws.policy");
 		}
 		LOGGER.info(String.format("Picking provided policy file: '%s' ", url.getPath()));
-		return new File(url.getFile()).getAbsolutePath();
+		String filePath = "";
+		try {
+			filePath = new File(URLDecoder.decode(url.getFile(), "UTF-8")).getAbsolutePath();
+		} catch (UnsupportedEncodingException e) {
+			LOGGER.severe("UTF-8 encoding error while parsing file path!");
+		}
+		return filePath;
 	}
 }
