@@ -199,6 +199,7 @@ import net.sourceforge.marathon.util.AllureUtils;
 import net.sourceforge.marathon.util.ExceptionUtil;
 import net.sourceforge.marathon.util.INameValidateChecker;
 import net.sourceforge.marathon.util.LauncherModelHelper;
+import net.sourceforge.marathon.util.STBConfigReader;
 
 /**
  * DisplayWindow provides the main user interface for Marathon from which the
@@ -1032,7 +1033,8 @@ public class DisplayWindow extends Stage implements INameValidateChecker, IResou
 
     public class ControllerStage extends Stage implements IErrorListener {
 
-        VBox content = new VBox();
+        private static final String INIT_MSG = "Seleccione un elemento para obtener sus propiedades.";
+		VBox content = new VBox();
         private ToolBar toolBar = new ToolBar();
         private TextArea textArea = new TextArea();
         private Label msgLabel = new Label("    ");
@@ -1044,7 +1046,7 @@ public class DisplayWindow extends Stage implements INameValidateChecker, IResou
             getIcons().add(FXUIUtils.getImageURL("logo16"));
             getIcons().add(FXUIUtils.getImageURL("logo32"));
             initComponents();
-            Scene scene = new Scene(content);
+            Scene scene = new Scene(content, STBConfigReader.getConsoleWidth(), STBConfigReader.getConsoleHeight());
             content.getStyleClass().add(StyleClassHelper.BACKGROUND);
             setScene(scene);
             setAlwaysOnTop(true);
@@ -1065,15 +1067,16 @@ public class DisplayWindow extends Stage implements INameValidateChecker, IResou
             toolBar.setPadding(new Insets(0,5,5,5));
             toolBar.getItems().addAll(
                     this.displayWindow.getActionButton(this.displayWindow.stopAction));
-            textArea.setText("Seleccione un elemento para obtener sus propiedades.");
             textArea.getStyleClass().clear();
             textArea.getStyleClass().add("console");
             textArea.setId("console");
             textArea.setEditable(false);
+            textArea.setPrefHeight(STBConfigReader.getConsoleHeight());
+            textArea.setPrefWidth(STBConfigReader.getConsoleWidth());
             HBox top = new HBox();
             top.getChildren().add(toolBar);
             top.getChildren().add(textArea);
-            top.setPadding(new Insets(5, 5, 0, 0));
+            top.setPadding(new Insets(5, 5, 1, 0));
             content.getChildren().addAll(top, msgLabel);
         }
 
@@ -1100,7 +1103,12 @@ public class DisplayWindow extends Stage implements INameValidateChecker, IResou
                     index = 0;
                 }
             }
-            textArea.appendText(text.toString());
+            
+            if (textArea.getText().equals(INIT_MSG)) {
+            	textArea.setText(text.toString());
+            } else {
+            	textArea.appendText(text.insert(0, '\n').toString());
+            }
         }
 
         @Override
@@ -1110,7 +1118,7 @@ public class DisplayWindow extends Stage implements INameValidateChecker, IResou
         }
 
         public void clear() {
-            textArea.setText("");
+            textArea.setText(INIT_MSG);
             this.displayWindow.isRawRecording = false;
             this.displayWindow.rawRecordButton.setSelected(false);
             msgLabel.setText("   ");

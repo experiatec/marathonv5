@@ -35,6 +35,7 @@ import net.sourceforge.marathon.runtime.api.Constants.MarathonMode;
 import net.sourceforge.marathon.runtime.api.IRuntimeFactory;
 import net.sourceforge.marathon.runtime.api.IRuntimeLauncherModel;
 import net.sourceforge.marathon.runtime.fx.api.ISubPropertiesLayout;
+import net.sourceforge.marathon.util.STBConfigReader;
 
 public class WebStartLauncherModel extends AbstractJavaDriverRuntimeLauncherModel
         implements IRuntimeLauncherModel, IJavaDriverRuntimeLauncherModel {
@@ -120,12 +121,12 @@ public class WebStartLauncherModel extends AbstractJavaDriverRuntimeLauncherMode
         // Add security configuration to allow Marathon agents to run
         // It is also possible to pass this variable through Marathon Project Config or set it 
         // by editing java.policy system wide file (javahome>/lib/security) but it is not advisable to do it.
-        String javaPolicyFilePath = STBConfigReader.getInstance().getSTBConfigProperties().getProperty("java.security.policy");
+        String javaPolicyFilePath = STBConfigReader.getJavaSecurityPolicyFilePath();
         if (StringUtils.isNotEmpty(javaPolicyFilePath)) {
         	profile.addWSArgument(String.format("-J-Djava.security.policy=%s", getJavaPolicyFilePath()));
 		}
 
-        String deploymentSecurityLevel = STBConfigReader.getInstance().getSTBConfigProperties().getProperty("deployment.security.level");
+        String deploymentSecurityLevel = STBConfigReader.getDeploymentSecurityLevel();
         if (StringUtils.isNotEmpty(deploymentSecurityLevel)) {
         	profile.addWSArgument("-J-Ddeployment.security.level=" + deploymentSecurityLevel);
 		}

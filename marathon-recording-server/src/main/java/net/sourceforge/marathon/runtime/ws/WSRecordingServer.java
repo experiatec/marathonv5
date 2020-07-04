@@ -19,7 +19,6 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
@@ -45,12 +44,14 @@ import net.sourceforge.marathon.runtime.api.IScriptElement;
 import net.sourceforge.marathon.runtime.api.Indent;
 import net.sourceforge.marathon.runtime.api.RecordingScriptModel;
 import net.sourceforge.marathon.runtime.api.WindowId;
+import net.sourceforge.marathon.util.STBConfigReader;
 
 public abstract class WSRecordingServer extends WebSocketServer implements IRecordingServer {
 
     public static final Logger LOGGER = Logger.getLogger(WSRecordingServer.class.getName());
     public static String COMMENT_PREFIX = "# ";
-	List<String> propertiesToUse = null;
+	private List<String> propertiesToUse = null;
+	private static Properties stbProperties = null;
 	
     private static class MenuItemScriptElement implements IScriptElement {
         private static final long serialVersionUID = 1L;
@@ -356,7 +357,7 @@ public abstract class WSRecordingServer extends WebSocketServer implements IReco
         JSONObject queryAttributes = query.has("attributes") ? query.getJSONObject("attributes") : new JSONObject();
         JSONObject attributes = new JSONObject();
         
-        getJSONPropertiesToUse().stream().filter(p -> queryAttributes.has(p)).forEach(p -> attributes.put(p, queryAttributes.get(p)));
+        getJSONPropertiesToUse().stream().filter(p -> queryAttributes.has(p)).forEach(p -> attributes.put(STBConfigReader.getStringValue(p, p), queryAttributes.get(p)));
 
         StringSelection stringSelection = new StringSelection(attributes.toString(2));
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
@@ -632,24 +633,10 @@ public abstract class WSRecordingServer extends WebSocketServer implements IReco
      */
 	private List<String> getJSONPropertiesToUse() {
 		if (this.propertiesToUse == null) {
-			try (InputStream input = WSRecordingServer.class.getClassLoader()
-					.getResourceAsStream("stb-config.properties")) {
-				this.propertiesToUse = new ArrayList<>();
-				Properties prop = new Properties();
-
-				if (input == null) {
-					LOGGER.warning("Sorry, unable to find stb-config.properties");
-					return null;
-				}
-
-				// load a properties file from class path, inside static method
-				prop.load(input);
-				this.propertiesToUse.addAll(Arrays.asList(prop.getProperty("obj.properties").split(",")));
-			} catch (IOException ex) {
-				LOGGER.warning("An errro has occurred while reading stb-config.properties");
-				throw new RuntimeException(ex);
-			}
+			this.propertiesToUse = new ArrayList<>();
+			this.propertiesToUse.addAll(Arrays.asList(STBConfigReader.getStringValue("obj.properties", "").split(",")));
 		}
 		return this.propertiesToUse;
 	}
+
 }

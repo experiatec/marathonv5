@@ -31,6 +31,7 @@ import net.sourceforge.marathon.runtime.api.Constants.MarathonMode;
 import net.sourceforge.marathon.runtime.api.IRuntimeFactory;
 import net.sourceforge.marathon.runtime.api.IRuntimeLauncherModel;
 import net.sourceforge.marathon.runtime.fx.api.ISubPropertiesLayout;
+import net.sourceforge.marathon.util.STBConfigReader;
 
 public class AppletLauncherModel extends AbstractJavaDriverRuntimeLauncherModel
         implements IRuntimeLauncherModel, IJavaDriverRuntimeLauncherModel {
@@ -85,7 +86,7 @@ public class AppletLauncherModel extends AbstractJavaDriverRuntimeLauncherModel
         // Add security configuration to allow Marathon agents to run
         // It is also possible to pass this variable through Marathon Project Config or set it 
         // by editing java.policy system wide file (javahome>/lib/security) but it is not advisable to do it.
-        String javaPolicyFilePath = STBConfigReader.getInstance().getSTBConfigProperties().getProperty("java.security.policy");
+        String javaPolicyFilePath = STBConfigReader.getJavaSecurityPolicyFilePath();
         if (StringUtils.isNotEmpty(javaPolicyFilePath)) {
         	profile.addVMArgument("-Djava.security.policy=" + WebStartLauncherModel.getJavaPolicyFilePath());
 		}
