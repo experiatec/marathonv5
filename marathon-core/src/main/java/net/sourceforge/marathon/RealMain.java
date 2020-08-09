@@ -235,8 +235,7 @@ public class RealMain {
         }
         List<String> selectedProjects = new ArrayList<>();
         ObservableList<ProjectInfo> projectList = FXCollections.observableArrayList();
-        List<List<String>> frameworks = Arrays.asList(Arrays.asList("Java/Swing Project", Constants.FRAMEWORK_SWING),
-                Arrays.asList("Java/FX Project", Constants.FRAMEWORK_FX));
+        List<List<String>> frameworks = Arrays.asList(Arrays.asList("Java/Swing Project", Constants.FRAMEWORK_SWING));
 //        List<List<String>> frameworks = Arrays.asList(Arrays.asList("Java/Swing Project", Constants.FRAMEWORK_SWING),
 //                Arrays.asList("Java/FX Project", Constants.FRAMEWORK_FX),
 //                Arrays.asList("Web Application Project", Constants.FRAMEWORK_WEB));
