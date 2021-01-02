@@ -66,7 +66,8 @@ public class JavaProfile {
     private static final String PROP_HOME = "marathon.home";
     private static final String MARATHON_AGENT = "marathon.agent";
     private static final String MARATHON_RECORDER = "marathon.recorder";
-
+    private static final String MARATHON_STB_INST = "marathon.stbinst";
+    
     private static Map<String, File> jnlpFiles = new HashMap<String, File>();
     private static final File NULLFILE = new File("");
 
@@ -269,6 +270,8 @@ public class JavaProfile {
      * @return commandline
      */
     public CommandLine getCommandLine() {
+    	// Agregamos clases de instrumentación Swing para captura de eventos en todos los componentes.
+    	this.addVMArgument("-Xbootclasspath/a:" + getSTBInstrumentationJar());
         if (launchMode == LaunchMode.JAVA_COMMAND_LINE) {
             List<String> args = new ArrayList<String>();
             args.add(findJavaBinary());
@@ -1108,6 +1111,35 @@ public class JavaProfile {
                 + ".file environment variable to point to the jar file");
     }
 
+    private String getSTBInstrumentationJar() {
+        if (System.getenv(MARATHON_STB_INST + ".file") != null) {
+            return System.getenv(MARATHON_STB_INST + ".file");
+        }
+        if (System.getProperty(MARATHON_STB_INST + ".file") != null) {
+            return System.getProperty(MARATHON_STB_INST + ".file");
+        }
+        String prefix = launchType.getPrefix();
+        String shortName = "msi.jar";
+        String path = findFile(
+                new String[] { ".", "marathon-stb-inst", "../marathon-stb-inst",
+                        System.getProperty(PROP_HOME, "."), dirOfMarathonJavaDriverJar, System.getenv("MARATHON_HOME") },
+                shortName);
+        if (path != null) {
+            Logger.getLogger(JavaProfile.class.getName()).info("Using " + path + " for recorder");
+            return path;
+        }
+        path = findFile(
+                new String[] { ".", "marathon-stb-inst", "../marathon-stb-inst",
+                        System.getProperty(PROP_HOME, "."), dirOfMarathonJavaDriverJar, System.getenv("MARATHON_HOME") },
+                "marathon-stb-inst.*.jar");
+        if (path != null) {
+            Logger.getLogger(JavaProfile.class.getName()).info("Using " + path + " for recorder");
+            return path;
+        }
+        throw new WebDriverException("Unable to find marathon-stb-inst.jar. Set " + MARATHON_STB_INST
+                + ".file environment variable to point to the jar file");
+    }
+    
     private String getRecorderJarURL() {
         return getURL(getRecorderJar());
     }

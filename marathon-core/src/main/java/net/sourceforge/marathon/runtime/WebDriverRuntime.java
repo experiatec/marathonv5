@@ -40,6 +40,7 @@ import net.sourceforge.marathon.runtime.api.Module;
 import net.sourceforge.marathon.runtime.api.ScriptModel;
 import net.sourceforge.marathon.runtime.api.WindowId;
 import net.sourceforge.marathon.runtime.ws.WSRecordingServer;
+import net.sourceforge.marathon.util.STBConfigReader;
 
 public class WebDriverRuntime implements IMarathonRuntime {
 
@@ -213,7 +214,7 @@ public class WebDriverRuntime implements IMarathonRuntime {
     private int findPort() {
         ServerSocket socket = null;
         try {
-            socket = new ServerSocket(0);
+            socket = new ServerSocket(STBConfigReader.getRecordingServerPort());
             return socket.getLocalPort();
         } catch (IOException e1) {
             throw new RuntimeException("Could not allocate a port: " + e1.getMessage());

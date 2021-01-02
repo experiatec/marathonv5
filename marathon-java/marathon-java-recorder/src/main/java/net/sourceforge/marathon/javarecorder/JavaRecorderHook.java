@@ -48,6 +48,7 @@ import javax.swing.event.ChangeListener;
 import org.json.JSONObject;
 
 import net.sourceforge.marathon.component.FileDialogTransformer;
+import net.sourceforge.marathon.component.JComponentTransformer;
 import net.sourceforge.marathon.component.RComponent;
 import net.sourceforge.marathon.component.RComponentFactory;
 import net.sourceforge.marathon.component.RFileDialog;
@@ -80,6 +81,7 @@ public class JavaRecorderHook implements AWTEventListener, ChangeListener, Actio
     private ContextMenuHandler contextMenuHandler;
 
     public JavaRecorderHook(int port) {
+    	LOGGER.info("JavaRecorderHook(int port)");
         try {
             recorder = new WSRecorder(port);
             objectMapConfiguration = recorder.getObjectMapConfiguration();
@@ -234,7 +236,9 @@ public class JavaRecorderHook implements AWTEventListener, ChangeListener, Actio
     }
 
     public static void premain(final String args, Instrumentation instrumentation) throws Exception {
+    	instrumentation.addTransformer(new JComponentTransformer());
         instrumentation.addTransformer(new FileDialogTransformer());
+
         final int port;
         if (args != null && args.trim().length() > 0) {
             port = Integer.parseInt(args.trim());

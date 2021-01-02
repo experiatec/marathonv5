@@ -29,6 +29,7 @@ dependencies {
   runtime project(":marathon-java:marathon-java-driver")
   runtime project(":marathon-java:marathon-java-agent")
   runtime project(":marathon-java:marathon-java-recorder")
+  runtime project(":marathon-java:marathon-stb-inst")
   runtime project(":marathon-java:marathon-java-runtime")
   runtime project(":marathon-javafx")
   runtime project(":marathon-javafx:marathon-javafx-agent")

@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.java_websocket.WebSocket;
@@ -317,7 +318,7 @@ public abstract class WSRecordingServer extends WebSocketServer implements IReco
     public void setRawRecording(boolean rawRecording) throws IOException {
         JSONObject o = new JSONObject();
         o.put("value", Boolean.toString(rawRecording));
-        Collection<WebSocket> cs = connections();
+        Collection<WebSocket> cs = getConnections();
         for (WebSocket webSocket : cs) {
             post(webSocket, "setRawRecording", o.toString());
         }
@@ -336,7 +337,7 @@ public abstract class WSRecordingServer extends WebSocketServer implements IReco
     private void setRecordingPause(boolean paused) {
         JSONObject o = new JSONObject();
         o.put("value", Boolean.toString(paused));
-        Collection<WebSocket> cs = connections();
+        Collection<WebSocket> cs = getConnections();
         for (WebSocket webSocket : cs) {
             post(webSocket, "setRecordingPause", o.toString());
         }
@@ -444,7 +445,7 @@ public abstract class WSRecordingServer extends WebSocketServer implements IReco
 
     @Override
     public void abortApplication() {
-        Collection<WebSocket> cs = connections();
+        Collection<WebSocket> cs = getConnections();
         for (WebSocket webSocket : cs) {
             post(webSocket, "abortApplication", null);
         }
@@ -457,11 +458,16 @@ public abstract class WSRecordingServer extends WebSocketServer implements IReco
 
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
-        post(conn, "setContextMenuTriggers", getContextMenuTriggers().toString());
+    	post(conn, "setContextMenuTriggers", getContextMenuTriggers().toString());
         post(conn, "setObjectMapConfig", getObjectMapConfiguration().toString());
     }
 
-    public void reopened(WebSocket conn, JSONObject query) {
+    @Override
+	public void onStart() {
+		LOGGER.info("Starting WSRecordingServer...");
+	}
+
+	public void reopened(WebSocket conn, JSONObject query) {
     	System.out.println("ON reOPEN!!!!");
         post(conn, "setContextMenuTriggers", getContextMenuTriggers().toString());
         post(conn, "setObjectMapConfig", getObjectMapConfiguration().toString());
@@ -469,6 +475,7 @@ public abstract class WSRecordingServer extends WebSocketServer implements IReco
 
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
+    	LOGGER.info("Closing WSRecordingServer...");
     }
 
     @Override
@@ -481,6 +488,7 @@ public abstract class WSRecordingServer extends WebSocketServer implements IReco
 
     @Override
     public void onError(WebSocket conn, Exception ex) {
+    	LOGGER.log(Level.SEVERE, "WSRecordingServer ERROR!!!", ex);
     }
 
     public void serve(String method, WebSocket conn, String data) {
@@ -540,7 +548,7 @@ public abstract class WSRecordingServer extends WebSocketServer implements IReco
     }
 
     public void postAll(String method, String data) {
-        Collection<WebSocket> cs = connections();
+        Collection<WebSocket> cs = getConnections();
         for (WebSocket webSocket : cs) {
             post(webSocket, method, data);
         }
@@ -621,7 +629,7 @@ public abstract class WSRecordingServer extends WebSocketServer implements IReco
     private void setInsertingScript(boolean inserting) {
         JSONObject o = new JSONObject();
         o.put("value", Boolean.toString(inserting));
-        Collection<WebSocket> cs = connections();
+        Collection<WebSocket> cs = getConnections();
         for (WebSocket webSocket : cs) {
             post(webSocket, "setInsertingScript", o.toString());
         }
