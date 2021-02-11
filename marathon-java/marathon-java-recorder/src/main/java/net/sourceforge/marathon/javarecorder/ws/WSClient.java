@@ -15,13 +15,17 @@
  ******************************************************************************/
 package net.sourceforge.marathon.javarecorder.ws;
 
+import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.UnknownHostException;
 import java.util.logging.Logger;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import org.json.JSONObject;
+
+import net.sourceforge.marathon.javarecorder.CustomSocketFactory;
 
 public class WSClient extends WebSocketClient {
 
@@ -31,11 +35,47 @@ public class WSClient extends WebSocketClient {
 
     public WSClient(int port, WSRecorder recorder) throws URISyntaxException {
         super(new URI("http://localhost:" + port));
-        this.recorder = recorder;
-        connect();
+        try {
+        	InetAddress loopbackInetAddress = InetAddress.getByName("localhost");
+			this.setSocketFactory(
+					new CustomSocketFactory(
+							loopbackInetAddress, 
+							port, 
+							loopbackInetAddress, 
+							getLocalPort() 
+					)
+			);
+			this.recorder = recorder;
+			connect();
+		} catch (UnknownHostException e) {
+			String errMsg = "'localhost' could not be resolved! Please check the network configuration and make sure "
+					+ "'localhost' is properly resolved as the loopback address of this PC!";
+			LOGGER.severe(errMsg);
+			throw new RuntimeException(errMsg, e);
+		}
     }
 
-    @Override
+    /**
+     * 
+     * @return The configured local port (client port) or the default one (8002).
+     */
+    private int getLocalPort() {
+    	int localPortNumber = 8002;
+    	String configuredPort = System.getenv().get("JAVA_RECORDER_PORT");
+    	if (null != configuredPort && !"".equals(configuredPort.trim())) {
+    		try {
+				localPortNumber = Integer.parseInt(configuredPort);
+			} catch (NumberFormatException e) {
+				String errMsg = "A numerical port number is required for environment variable JAVA_RECORDER_PORT!";
+				LOGGER.severe(errMsg);
+				throw new RuntimeException(errMsg, e);
+			}
+    	}
+    	
+    	return localPortNumber;
+	}
+
+	@Override
     public void onOpen(ServerHandshake handshakedata) {
         recorder.onOpen();
     }

@@ -9,7 +9,7 @@ public class ActiveComponentStore {
 
 	private static ActiveComponentStore activeComponentStore = null;
 	
-	private Stack<JComponent> componentStack = new Stack<>();
+	private Stack<CachedComponent<JComponent>> componentStack = new Stack<>();
 	
 	private ActiveComponentStore() {}
 	
@@ -22,12 +22,12 @@ public class ActiveComponentStore {
         return activeComponentStore; 
     }
 
-	public void push(JComponent component) {
+	public void push(CachedComponent<JComponent> component) {
 		componentStack.push(component);
 	}
 	
-	public JComponent pop() {
-		JComponent comp = null;
+	public CachedComponent<JComponent> pop() {
+		CachedComponent<JComponent> comp = null;
 		try {
 			comp = componentStack.pop();
 		} catch(EmptyStackException e) {
