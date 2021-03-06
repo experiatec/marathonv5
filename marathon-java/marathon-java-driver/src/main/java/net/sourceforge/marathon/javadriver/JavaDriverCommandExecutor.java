@@ -20,6 +20,7 @@ import static org.openqa.selenium.remote.DriverCommand.QUIT;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openqa.selenium.WebDriverException;
@@ -111,6 +112,7 @@ public class JavaDriverCommandExecutor extends HttpCommandExecutor {
             getAddressOfRemoteServer().openConnection().connect();
             return true;
         } catch (IOException e) {
+        	LOGGER.log(Level.WARNING, String.format("Error while trying to open connection to [%s]!", getAddressOfRemoteServer()), e);
             // Cannot connect yet.
             return false;
         }

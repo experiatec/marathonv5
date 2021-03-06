@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sourceforge.marathon.javaagent.JavaElementPropertyAccessor.InternalFrameMonitor;
@@ -79,8 +80,9 @@ public class JavaAgentHook {
                             }
                             JavaServer server = new JavaServer(port, true);
                             server.start(0);
+                            LOGGER.info("Agent's JavaServer started successfully...");
                         } catch (IOException e) {
-                            e.printStackTrace();
+                        	LOGGER.log(Level.SEVERE, "Error while configuring JavaAgent!", e);
                         }
                         return null;
                     }

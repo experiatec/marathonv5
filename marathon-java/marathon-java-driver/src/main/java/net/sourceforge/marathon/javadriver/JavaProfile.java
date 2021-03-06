@@ -32,6 +32,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -272,6 +273,9 @@ public class JavaProfile {
     public CommandLine getCommandLine() {
     	// Agregamos clases de instrumentación Swing para captura de eventos en todos los componentes.
     	this.addVMArgument("-Xbootclasspath/a:" + getSTBInstrumentationJar());
+    	// Pasamos propiedades del proceso principal al sub proceso
+    	this.addVMArgument("-Djava.recorder.port=" + System.getProperty("java.recorder.port"));
+    	this.addVMArgument("-Djava.driver.port=" + System.getProperty("java.driver.port"));
         if (launchMode == LaunchMode.JAVA_COMMAND_LINE) {
             List<String> args = new ArrayList<String>();
             args.add(findJavaBinary());
@@ -1028,20 +1032,38 @@ public class JavaProfile {
     }
 
     private int findPort() {
-        ServerSocket socket = null;
-        try {
-            socket = new ServerSocket(0);
-            return socket.getLocalPort();
-        } catch (IOException e1) {
-            throw new WebDriverException("Could not allocate a port: " + e1.getMessage());
-        } finally {
-            if (socket != null) {
-                try {
-                    socket.close();
-                } catch (IOException e) {
-                }
-            }
-        }
+    	int localPortNumber = 0;
+    	String configuredPort = System.getProperty("java.driver.port");
+    	if (null != configuredPort && !"".equals(configuredPort.trim())) {
+    		LOGGER.info(String.format("Using configured port number [%s] for JavaDriver server...", configuredPort));
+    		try {
+				localPortNumber = Integer.parseInt(configuredPort);
+			} catch (NumberFormatException e) {
+				String errMsg = "A numerical port number is required for java.driver.port!";
+				LOGGER.severe(errMsg);
+				throw new RuntimeException(errMsg, e);
+			}
+    	} else {
+    		LOGGER.info(String.format("Getting dynamic JavaDriver port..."));
+			ServerSocket socket = null;
+			try {
+			    socket = new ServerSocket(0);
+			    localPortNumber = socket.getLocalPort();
+			    LOGGER.info(String.format("Using dynamic port number [%s] for JavaDriver server...", localPortNumber));
+			} catch (IOException e1) {
+				LOGGER.log(Level.SEVERE, "An unexpected error has occurred while trying to allocate dynamic port number for JavaDriver server!", e1);
+			    throw new WebDriverException("Could not allocate a port: " + e1.getMessage());
+			} finally {
+			    if (socket != null) {
+			        try {
+			            socket.close();
+			        } catch (IOException e) {
+			        }
+			    }
+			}
+    	}
+    	
+    	return localPortNumber;
     }
 
     private void setToolOptions(CommandLine commandLine) {

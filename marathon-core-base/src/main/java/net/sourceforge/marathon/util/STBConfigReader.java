@@ -93,16 +93,6 @@ public class STBConfigReader {
 	}
 	
 	/**
-	 * 
-	 * @return Retorna el puerto configurado en la propiedad
-	 *         "recording-server.port". En el caso de que no se haya configurado
-	 *         retornara 0.
-	 */
-	public static int getRecordingServerPort() {
-		return Integer.parseInt(getInstance().getSTBConfigProperties().getProperty("recording-server.port", "0"));
-	}
-	
-	/**
 	 * Gets the string value of property name.
 	 * @param propertyName
 	 * @return

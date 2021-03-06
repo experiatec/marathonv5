@@ -14,7 +14,7 @@ public class CustomMouseAdapter extends MouseAdapter {
 	public void mouseClicked(MouseEvent me) {
 		CachedComponent<JComponent> lastActivatedComponent = ActiveComponentStore.getInstance().pop();
 		if (lastActivatedComponent != null) {
-			LOGGER.info("Restoring component border...");
+			LOGGER.fine("Restoring component border...");
 			lastActivatedComponent.getComponent().setBorder(lastActivatedComponent.getOriginalBorder());
 			storeComponent(me);
 		} else {
@@ -23,7 +23,7 @@ public class CustomMouseAdapter extends MouseAdapter {
 	}
 
 	private void storeComponent(MouseEvent me) {
-		LOGGER.info("Storing current component...");
+		LOGGER.fine("Storing current component...");
 		JComponent comp = ((javax.swing.JComponent)me.getSource());
 		ActiveComponentStore.getInstance().push(new CachedComponent<JComponent>(comp, comp.getBorder()));
 		comp.setBorder(new javax.swing.border.LineBorder(java.awt.Color.red, 1));

@@ -211,10 +211,12 @@ public class JavaServer extends NanoHTTPD {
 
     public JavaServer(int port) {
         this(port, false);
+        LOGGER.info(String.format("Agent's JavaServer configured to start using port [%s]...", port));
     }
 
     public JavaServer(int port, boolean exitOnQuit) {
         super(port);
+        LOGGER.info(String.format("Agent's JavaServer configured to start using port [%s]...", port));
         this.exitOnQuit = exitOnQuit;
         this.port = port;
         initCapabilities();

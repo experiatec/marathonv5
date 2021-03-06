@@ -19,6 +19,7 @@ import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.java_websocket.client.WebSocketClient;
@@ -45,12 +46,18 @@ public class WSClient extends WebSocketClient {
 							getLocalPort() 
 					)
 			);
+			LOGGER.info(
+					String.format("Configuring WSClient to connect to [%s] on port [%s] from address [%s] and client port [%s]...", 
+							loopbackInetAddress, 
+							port, 
+							loopbackInetAddress, 
+							getLocalPort()));
 			this.recorder = recorder;
 			connect();
 		} catch (UnknownHostException e) {
 			String errMsg = "'localhost' could not be resolved! Please check the network configuration and make sure "
 					+ "'localhost' is properly resolved as the loopback address of this PC!";
-			LOGGER.severe(errMsg);
+			LOGGER.log(Level.SEVERE, errMsg, e);
 			throw new RuntimeException(errMsg, e);
 		}
     }
@@ -61,17 +68,17 @@ public class WSClient extends WebSocketClient {
      */
     private int getLocalPort() {
     	int localPortNumber = 8002;
-    	String configuredPort = System.getenv().get("JAVA_RECORDER_PORT");
+    	String configuredPort = System.getProperty("java.recorder.port", Integer.toString(localPortNumber));
     	if (null != configuredPort && !"".equals(configuredPort.trim())) {
     		try {
 				localPortNumber = Integer.parseInt(configuredPort);
 			} catch (NumberFormatException e) {
-				String errMsg = "A numerical port number is required for environment variable JAVA_RECORDER_PORT!";
+				String errMsg = "A numerical port number is required for java.recorder.port!";
 				LOGGER.severe(errMsg);
 				throw new RuntimeException(errMsg, e);
-			}
+			} 
     	}
-    	
+    	LOGGER.fine(String.format("Configured port number [%s] for java WSRecorder...", localPortNumber));
     	return localPortNumber;
 	}
 

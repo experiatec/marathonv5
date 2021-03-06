@@ -25,6 +25,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.inject.BindingAnnotation;
@@ -267,6 +268,7 @@ public class Display implements IPlaybackListener, IScriptListener, IExceptionRe
             runtime.startRecording(recorder);
             setState(State.RECORDING);
         } catch (Throwable e) {
+        	LOGGER.log(Level.SEVERE, "Unexpected error while initiating recording session!", e);
             setState(State.STOPPED_WITH_APP_CLOSED);
             destroyRuntime();
             displayView.stopInserting();

@@ -27,14 +27,14 @@ public class JComponentTransformer implements ClassFileTransformer {
             ctClass = classPool.makeClass(new java.io.ByteArrayInputStream(b));
 
             if (ctClass.getName().equals("javax.swing.JComponent")) {
-            	LOGGER.fine("Transforming javax.swing.JComponent constructor...");
+            	LOGGER.finest("Transforming javax.swing.JComponent constructor...");
                 CtConstructor ctConstructor = ctClass.getDeclaredConstructor(null);
                 ctConstructor.insertAfter("{" + "addMouseListener(new marathon.stb.inst.CustomMouseAdapter());" + "}");
-                LOGGER.fine("Constructor inserted...");
+                LOGGER.finest("Constructor inserted...");
+                LOGGER.finest("Getting the byte code...");
+                b = ctClass.toBytecode();
+                LOGGER.finest("Bytecode generated...");
             }
-            LOGGER.fine("Getting the byte code...");
-            b = ctClass.toBytecode();
-            LOGGER.fine("Bytecode generated...");
         } catch (Throwable e) {
         	LOGGER.log(Level.SEVERE, "Error while transforming JComponent bytecode", e);
         } finally {

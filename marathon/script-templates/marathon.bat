@@ -24,6 +24,10 @@ REM
 
 SET DIST=%~dp0
 
+SET DRIVER_PORT=7001
+SET RECORDER_PORT=8002
+SET RSERVER_PORT=8001
+
 IF NOT DEFINED DIST goto :nodist
 SET MARATHONHOME=%DIST%
 :nodist
@@ -36,12 +40,12 @@ for %%i in (%1 %2 %3 %4 %5 %6 %7 %8 %9) do if %%i==-help goto :batch
 for %%i in (%1 %2 %3 %4 %5 %6 %7 %8 %9) do if %%i==-i goto :batch
 for %%i in (%1 %2 %3 %4 %5 %6 %7 %8 %9) do if %%i==-ignore goto :batch
 
-start javaw -Dfile.encoding=utf8 -cp "%MARATHONHOME%/UserLibs/*;%MARATHON_EXTRA_JARS%;%MARATHONHOME%/$marathonJar" net.sourceforge.marathon.Main %1 %2 %3 %4 %5 %6 %7 %8 %9
+start javaw -Dfile.encoding=utf8 -Djava.driver.port=%DRIVER_PORT% -Djava.recorder.port=%RECORDER_PORT% -Drecordingserver.port=%RSERVER_PORT% -cp "%MARATHONHOME%/UserLibs/*;%MARATHON_EXTRA_JARS%;%MARATHONHOME%/$marathonJar" net.sourceforge.marathon.Main %1 %2 %3 %4 %5 %6 %7 %8 %9
 goto end
 :batch
 ECHO changing the console to UTF8
 chcp 65001
-java -Dfile.encoding=utf8 -cp "%MARATHONHOME%/UserLibs/*;%MARATHONHOME%/;%MARATHON_EXTRA_JARS%;%MARATHONHOME%/$marathonJar" net.sourceforge.marathon.Main %1 %2 %3 %4 %5 %6 %7 %8 %9
+java -Dfile.encoding=utf8 -Djava.driver.port=%DRIVER_PORT% -Djava.recorder.port=%RECORDER_PORT% -Drecordingserver.port=%RSERVER_PORT% -cp "%MARATHONHOME%/UserLibs/*;%MARATHONHOME%/;%MARATHON_EXTRA_JARS%;%MARATHONHOME%/$marathonJar" net.sourceforge.marathon.Main %1 %2 %3 %4 %5 %6 %7 %8 %9
 goto :end
 
 :nodist

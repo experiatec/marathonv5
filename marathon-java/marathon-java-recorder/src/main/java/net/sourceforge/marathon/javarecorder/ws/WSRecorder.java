@@ -61,6 +61,7 @@ public class WSRecorder implements IJSONRecorder {
     }
 
     public WSRecorder(final int port) throws IOException, URISyntaxException {
+    	LOGGER.info(String.format("Configuring WSClient and WSRecorder on port [%s]...", port));
         wsClient = AccessController.doPrivileged(new PrivilegedAction<WSClient>() {
             @Override
             public WSClient run() {

@@ -16,6 +16,10 @@
 PROG=`which "\$0"`
 DIST=`dirname \$PROG`
 
+DRIVER_PORT=7001
+RECORDER_PORT=8002
+RSERVER_PORT=8001
+
 if [ "\$DIST" = "." ]
 then
   DIST=`pwd`
@@ -30,7 +34,7 @@ MARATHONHOME=\$DIST
 
 if [ `uname -s` = Darwin ]
 then
-  java -Xdock:icon="\$MARATHONHOME/applet.icns" -Dfile.encoding=utf8 -Dcom.apple.mrj.application.growbox.intrudes=false -Dcom.apple.mrj.application.live-resize=true -Dcom.apple.macos.smallTabs=true -Xdock:name=Marathon -Dmarathon.useAppleMenuBar=true -cp "\$MARATHONHOME/UserLibs/*:\$MARATHON_EXTRA_JARS:\$MARATHONHOME/$marathonJar" net.sourceforge.marathon.Main \$*
+  java -Xdock:icon="\$MARATHONHOME/applet.icns" -Dfile.encoding=utf8 -Dcom.apple.mrj.application.growbox.intrudes=false -Dcom.apple.mrj.application.live-resize=true -Dcom.apple.macos.smallTabs=true -Xdock:name=Marathon -Dmarathon.useAppleMenuBar=true -Dfile.encoding=utf8 -Djava.driver.port=\$DRIVER_PORT -Djava.recorder.port=\$RECORDER_PORT -Drecordingserver.port=\$RSERVER_PORT -cp "\$MARATHONHOME/UserLibs/*:\$MARATHON_EXTRA_JARS:\$MARATHONHOME/$marathonJar" net.sourceforge.marathon.Main \$*
 else
-  java -Dfile.encoding=utf8 -cp "\$MARATHONHOME/UserLibs/*:\$MARATHON_EXTRA_JARS:\$MARATHONHOME/:\$MARATHONHOME/$marathonJar" net.sourceforge.marathon.Main \$*
+  java -Dfile.encoding=utf8 -Dfile.encoding=utf8 -Djava.driver.port=\$DRIVER_PORT -Djava.recorder.port=\$RECORDER_PORT -Drecordingserver.port=\$RSERVER_PORT -cp "\$MARATHONHOME/UserLibs/*:\$MARATHON_EXTRA_JARS:\$MARATHONHOME/:\$MARATHONHOME/$marathonJar" net.sourceforge.marathon.Main \$*
 fi

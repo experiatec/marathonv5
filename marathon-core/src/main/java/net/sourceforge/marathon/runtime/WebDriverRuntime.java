@@ -40,7 +40,6 @@ import net.sourceforge.marathon.runtime.api.Module;
 import net.sourceforge.marathon.runtime.api.ScriptModel;
 import net.sourceforge.marathon.runtime.api.WindowId;
 import net.sourceforge.marathon.runtime.ws.WSRecordingServer;
-import net.sourceforge.marathon.util.STBConfigReader;
 
 public class WebDriverRuntime implements IMarathonRuntime {
 
@@ -162,16 +161,17 @@ public class WebDriverRuntime implements IMarathonRuntime {
 
     private int startRecordingServer() {
         recordingServerPort = findPort();
+        LOGGER.info(String.format("Starting RecordingServer on port [%s]...", recordingServerPort));
         recordingServer = new WSRecordingServer(recordingServerPort, NamingStrategyFactory.get()) {
             @Override
             public void onClose(WebSocket conn, int code, String reason, boolean remote) {
                 super.onClose(conn, code, reason, remote);
-                scriptReloadScript(recordingServerPort);
+                //scriptReloadScript(recordingServerPort);
             }
 
             @Override
             public void reloadScript(WebSocket conn, JSONObject query) {
-                scriptReloadScript(recordingServerPort);
+                //scriptReloadScript(recordingServerPort);
             }
 
             public JSONObject getContextMenuTriggers() {
@@ -182,10 +182,12 @@ public class WebDriverRuntime implements IMarathonRuntime {
 
         };
         recordingServer.start();
+        LOGGER.info(String.format("RecordingServer started on port [%s]...", recordingServerPort));
         return recordingServerPort;
     }
 
     private void scriptReloadScript(final int port) {
+    	LOGGER.fine(String.format("Reloading script with port[%s]...", port));
         if (!script.isDriverAvailable()) {
             releaseInterpreters();
             destroy();
@@ -214,7 +216,7 @@ public class WebDriverRuntime implements IMarathonRuntime {
     private int findPort() {
         ServerSocket socket = null;
         try {
-            socket = new ServerSocket(STBConfigReader.getRecordingServerPort());
+            socket = new ServerSocket(Integer.parseInt(System.getProperty("recordingserver.port", "0")));
             return socket.getLocalPort();
         } catch (IOException e1) {
             throw new RuntimeException("Could not allocate a port: " + e1.getMessage());
@@ -328,7 +330,7 @@ public class WebDriverRuntime implements IMarathonRuntime {
             recordingPort = startRecordingServer();
             System.setProperty("marathon.recording.port", "" + recordingPort);
             Logger.getLogger(WebDriverRuntime.class.getName())
-                    .info("Started recorder on: " + System.getProperty("marathon.recording.port"));
+                    .info(String.format("RecordingServer started on port [%s]...: ", System.getProperty("marathon.recording.port")));
         }
         scriptModel = ScriptModel.getModel();
         script = scriptModel.createScript(new ScriptOutput(console), new ScriptError(console), scriptText, filePath, isRecording,
