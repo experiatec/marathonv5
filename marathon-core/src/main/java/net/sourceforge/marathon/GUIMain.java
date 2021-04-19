@@ -16,10 +16,15 @@
 package net.sourceforge.marathon;
 
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.jnativehook.GlobalScreen;
+import org.jnativehook.NativeHookException;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
+import net.sourceforge.marathon.util.GlobalKeyListener;
 
 public class GUIMain extends Application {
 
@@ -31,8 +36,19 @@ public class GUIMain extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+    	initGlobalKeyListener();
         List<String> args = getParameters().getRaw();
         RealMain.realmain(args.toArray(new String[args.size()]));
     }
 
+    private void initGlobalKeyListener() {
+		try {
+			GlobalScreen.registerNativeHook();
+		} catch (NativeHookException ex) {
+			LOGGER.log(Level.SEVERE, ex, () -> { return "An unexpected error has occurred while registering NativeHook!";});
+			System.exit(1);
+		}
+
+		GlobalScreen.addNativeKeyListener(GlobalKeyListener.getInstance());
+    }
 }

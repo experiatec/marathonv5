@@ -43,6 +43,7 @@ import javax.swing.JToggleButton;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.plaf.basic.BasicComboPopup;
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.ComboPopup;
 import javax.swing.table.JTableHeader;
@@ -220,6 +221,8 @@ public class RComponentFactory {
             realComponent = grandparent;
         } else if (parent instanceof JTree) {
             realComponent = parent;
+        } else if (component instanceof BasicInternalFrameTitlePane) {
+        	realComponent = parent;
         }
         return realComponent;
     }

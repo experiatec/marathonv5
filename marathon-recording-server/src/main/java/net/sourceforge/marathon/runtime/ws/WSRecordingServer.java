@@ -45,6 +45,7 @@ import net.sourceforge.marathon.runtime.api.IScriptElement;
 import net.sourceforge.marathon.runtime.api.Indent;
 import net.sourceforge.marathon.runtime.api.RecordingScriptModel;
 import net.sourceforge.marathon.runtime.api.WindowId;
+import net.sourceforge.marathon.util.GlobalKeyListener;
 import net.sourceforge.marathon.util.STBConfigReader;
 
 public abstract class WSRecordingServer extends WebSocketServer implements IRecordingServer {
@@ -52,7 +53,6 @@ public abstract class WSRecordingServer extends WebSocketServer implements IReco
     public static final Logger LOGGER = Logger.getLogger(WSRecordingServer.class.getName());
     public static String COMMENT_PREFIX = "# ";
 	private List<String> propertiesToUse = null;
-	private static Properties stbProperties = null;
 	
     private static class MenuItemScriptElement implements IScriptElement {
         private static final long serialVersionUID = 1L;
@@ -355,11 +355,16 @@ public abstract class WSRecordingServer extends WebSocketServer implements IReco
     public JSONObject record(WebSocket conn, JSONObject query) throws IOException {
         LOGGER.info("WSRecordingServer.record(" + query.toString(2) + ")");
         
-        JSONObject queryAttributes = query.has("attributes") ? query.getJSONObject("attributes") : new JSONObject();
         JSONObject attributes = new JSONObject();
+        if (query.has("attributes") && !GlobalKeyListener.getInstance().isWindowRecognitionModeEnabled()) {
+        	JSONObject queryAttributes = query.getJSONObject("attributes");
+        	getJSONPropertiesToUse().stream().filter(p -> queryAttributes.has(p)).forEach(p -> attributes.put(STBConfigReader.getStringValue(p, p), queryAttributes.get(p)));
+        } else if (query.has("container") && GlobalKeyListener.getInstance().isWindowRecognitionModeEnabled()) {
+        	LOGGER.info("Window recognition mode activated...");
+        	JSONObject queryAttributes = query.getJSONObject("container").getJSONObject("attributes");
+        	getJSONPropertiesToUse().stream().filter(p -> queryAttributes.has(p)).forEach(p -> attributes.put(STBConfigReader.getStringValue(p, p), queryAttributes.get(p)));
+        } 
         
-        getJSONPropertiesToUse().stream().filter(p -> queryAttributes.has(p)).forEach(p -> attributes.put(STBConfigReader.getStringValue(p, p), queryAttributes.get(p)));
-
         StringSelection stringSelection = new StringSelection(attributes.toString(2));
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(stringSelection, null);

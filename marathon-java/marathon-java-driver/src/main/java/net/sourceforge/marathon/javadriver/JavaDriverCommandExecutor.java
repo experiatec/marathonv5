@@ -76,7 +76,7 @@ public class JavaDriverCommandExecutor extends HttpCommandExecutor {
                 new Wait() {
                     @Override
                     public boolean until() {
-                        if (isConnected())
+                        if (isConnected(0))
                             return true;
                         if (!command.isRunning()) {
                             if (profile.isJavaWebStart() || profile.isCommandLine()
@@ -94,7 +94,7 @@ public class JavaDriverCommandExecutor extends HttpCommandExecutor {
                     command.destroy();
                 throw e;
             }
-            if (!isConnected()) {
+            if (!isConnected(0)) {
                 if (command.isRunning()) {
                     command.destroy();
                     LOGGER.warning("Unable to estabilsh connection with the application: " + command);
@@ -107,14 +107,25 @@ public class JavaDriverCommandExecutor extends HttpCommandExecutor {
         }
     }
 
-    public boolean isConnected() {
+    public boolean isConnected(int times) {
+    	LOGGER.log(Level.INFO, String.format("Open connection from JavaDriver to JavaAgent [%s]... (%s)", getAddressOfRemoteServer(), times));
         try {
             getAddressOfRemoteServer().openConnection().connect();
             return true;
         } catch (IOException e) {
-        	LOGGER.log(Level.WARNING, String.format("Error while trying to open connection to [%s]!", getAddressOfRemoteServer()), e);
-            // Cannot connect yet.
-            return false;
+        	if (times < 3) {
+        		try {
+        			// Cannot connect yet.
+        			LOGGER.log(Level.INFO, String.format("Could not connect from JavaDriver to JavaAgent [%s]! Will try to reconnect after 1s...", getAddressOfRemoteServer()));
+					Thread.sleep(1000);
+				} catch (InterruptedException e1) {
+					
+				}
+        		return isConnected(++times);
+			} else {
+				LOGGER.log(Level.WARNING, String.format("Error while trying to open connection from JavaDriver to JavaAgent [%s]!", getAddressOfRemoteServer()), e);
+				return false;
+			}
         }
     }
 
