@@ -32,6 +32,7 @@ import net.sourceforge.marathon.runtime.api.Constants;
 import net.sourceforge.marathon.runtime.fx.api.FileSelectionHandler;
 import net.sourceforge.marathon.runtime.fx.api.IFileSelectedAction;
 import net.sourceforge.marathon.runtime.fx.api.IPropertiesLayout;
+import static net.sourceforge.marathon.util.I18n.*;
 
 public class ProjectLayout implements IPropertiesLayout, IFileSelectedAction {
 
@@ -46,7 +47,7 @@ public class ProjectLayout implements IPropertiesLayout, IFileSelectedAction {
         public void requestFocus() {
         };
     };
-    private Button browseButton = FXUIUtils.createButton("browse", "Browse project", true, "Browse");
+    private Button browseButton = FXUIUtils.createButton("browse", getI18nLabel(PROJECT_LAYOUT_BUTTON_BROWSE_TOOLTIP), true, getI18nLabel(PROJECT_LAYOUT_BUTTON_BROWSE));
     private ModalDialog<?> parent;
 
     public static String projectDir = "";
@@ -66,11 +67,11 @@ public class ProjectLayout implements IPropertiesLayout, IFileSelectedAction {
         issuesTrackerPattern.setPromptText("https://bugzilla.mozilla.org/show_bug.cgi?id=%s");
         testManagementPattern.setPromptText("http://mantis.testlink.org/view.php?id=%s");
         // @formatter:off
-        form.addFormField("Name: ", projectNameField)
-            .addFormField("Directory: ", dirField, browseButton)
-            .addFormField("Description: ", descriptionArea)
-            .addFormField("Issue Tracker Pattern: ", issuesTrackerPattern)
-            .addFormField("Test Management Pattern: ", testManagementPattern);
+        form.addFormField(getI18nLabel(PROJECT_LAYOUT_NAME), projectNameField)
+            .addFormField(getI18nLabel(PROJECT_LAYOUT_DIRECTORY), dirField, browseButton)
+            .addFormField(getI18nLabel(PROJECT_LAYOUT_DESCRIPTION), descriptionArea)
+            .addFormField(getI18nLabel(PROJECT_LAYOUT_ISSUE_TRACKER_PATTERN), issuesTrackerPattern)
+            .addFormField(getI18nLabel(PROJECT_LAYOUT_TEST_MANAGEMENT_PATTERN), testManagementPattern);
         // @formatter:on
         return form;
     }
@@ -80,14 +81,14 @@ public class ProjectLayout implements IPropertiesLayout, IFileSelectedAction {
         dirField.setFocusTraversable(false);
         dirField.textProperty().addListener((observable, oldValue, newValue) -> projectDir = dirField.getText());
 
-        FileSelectionHandler fileSelectionHandler = new FileSelectionHandler(this, null, parent, null, "Select Project Directory");
+        FileSelectionHandler fileSelectionHandler = new FileSelectionHandler(this, null, parent, null, getI18nLabel(FILE_SELECTION_HANDLER_TITLE));
         fileSelectionHandler.setMode(FileSelectionHandler.DIRECTORY_CHOOSER);
         browseButton.setOnAction(fileSelectionHandler);
     }
 
     @Override
     public String getName() {
-        return "Project";
+        return getI18nLabel(PROJECT_LAYOUT_TAB_LABEL);
     }
 
     @Override
@@ -144,14 +145,14 @@ public class ProjectLayout implements IPropertiesLayout, IFileSelectedAction {
     public boolean isValidInput(boolean showAlert) {
         if (projectNameField.getText() == null || projectNameField.getText().equals("")) {
             if (showAlert) {
-                FXUIUtils.showMessageDialog(parent.getStage(), "Project name can't be empty", "Project Name", AlertType.ERROR);
+                FXUIUtils.showMessageDialog(parent.getStage(), getI18nLabel(PROJECT_LAYOUT_NAME_ERROR_MESSAGE), getI18nLabel(PROJECT_LAYOUT_NAME_ERROR_MESSAGE_FIELD), AlertType.ERROR);
             }
             Platform.runLater(() -> projectNameField.requestFocus());
             return false;
         }
         if (dirField.getText() == null || dirField.getText().equals("")) {
             if (showAlert) {
-                FXUIUtils.showMessageDialog(parent.getStage(), "Project directory can't be empty", "Project Directory",
+                FXUIUtils.showMessageDialog(parent.getStage(), getI18nLabel(PROJECT_LAYOUT_DIRECTORY_ERROR_MESSAGE), getI18nLabel(PROJECT_LAYOUT_DIRECTORY_ERROR_MESSAGE_FIELD),
                         AlertType.ERROR);
             }
             Platform.runLater(() -> browseButton.requestFocus());

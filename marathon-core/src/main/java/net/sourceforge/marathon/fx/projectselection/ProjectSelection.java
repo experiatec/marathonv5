@@ -52,6 +52,7 @@ import net.sourceforge.marathon.fx.api.FXUIUtils;
 import net.sourceforge.marathon.fx.api.ModalDialog;
 import net.sourceforge.marathon.runtime.api.Constants;
 import net.sourceforge.marathon.runtime.api.ProjectFile;
+import static net.sourceforge.marathon.util.I18n.*;
 
 public class ProjectSelection extends ModalDialog<ProjectInfo> {
 
@@ -59,12 +60,12 @@ public class ProjectSelection extends ModalDialog<ProjectInfo> {
 
     private TableView<ProjectInfo> projectInfotable = new TableView<ProjectInfo>();
     private ContextMenu contextMenu = new ContextMenu();
-    private Button newButton = FXUIUtils.createButton("new", "New project", true, "New");
-    private Button editButton = FXUIUtils.createButton("edit", "Edit project", true, "Edit");
-    private Button browseButton = FXUIUtils.createButton("browse", "Browse project", true, "Browse");
-    private Button deleteButton = FXUIUtils.createButton("delete", "Delete project", false, "Delete");
-    private Button cancelButton = FXUIUtils.createButton("cancel", "Cancel", true, "Cancel");
-    private Button selectButton = FXUIUtils.createButton("ok", "Select project", true, "Run");;
+    private Button newButton = FXUIUtils.createButton("new", getI18nLabel(SELECT_PROJECT_BUTTON_NEW_TOOLTIP), true, getI18nLabel(SELECT_PROJECT_BUTTON_NEW));
+    private Button editButton = FXUIUtils.createButton("edit", getI18nLabel(SELECT_PROJECT_BUTTON_EDIT_TOOLTIP), true, getI18nLabel(SELECT_PROJECT_BUTTON_EDIT));
+    private Button browseButton = FXUIUtils.createButton("browse", getI18nLabel(SELECT_PROJECT_BUTTON_BROWSE_TOOLTIP), true, getI18nLabel(SELECT_PROJECT_BUTTON_BROWSE));
+    private Button deleteButton = FXUIUtils.createButton("delete", getI18nLabel(SELECT_PROJECT_BUTTON_DELETE_TOOLTIP), false, getI18nLabel(SELECT_PROJECT_BUTTON_DELETE));
+    private Button cancelButton = FXUIUtils.createButton("cancel", getI18nLabel(SELECT_PROJECT_BUTTON_CANCEL_TOOLTIP), true, getI18nLabel(SELECT_PROJECT_BUTTON_CANCEL));
+    private Button selectButton = FXUIUtils.createButton("ok", getI18nLabel(SELECT_PROJECT_BUTTON_RUN_TOOLTIP), true, getI18nLabel(SELECT_PROJECT_BUTTON_RUN));;
     private ButtonBarX buttonBar = new ButtonBarX();
 
     private ObservableList<ProjectInfo> projects;
@@ -73,7 +74,7 @@ public class ProjectSelection extends ModalDialog<ProjectInfo> {
     private List<List<String>> frameworks;
 
     public ProjectSelection(ObservableList<ProjectInfo> projects, List<List<String>> frameworks) {
-        super("Select a Project", "Select a project or create a new project from the list", FXUIUtils.getIcon("play"));
+        super(getI18nLabel(SELECT_PROJECT_SHORT), getI18nLabel(SELECT_PROJECT_LARGE), FXUIUtils.getIcon("play"));
         this.projects = projects;
         this.frameworks = frameworks;
         initComponents();
@@ -114,15 +115,15 @@ public class ProjectSelection extends ModalDialog<ProjectInfo> {
             return tableRow;
         });
 
-        TableColumn<ProjectInfo, String> projectNameColumn = new TableColumn<>("Name");
+        TableColumn<ProjectInfo, String> projectNameColumn = new TableColumn<>(getI18nLabel(SELECT_PROJECT_TABLE_NAME));
         projectNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         projectNameColumn.prefWidthProperty().bind(projectInfotable.widthProperty().multiply(0.15));
 
-        TableColumn<ProjectInfo, String> projectfolderColumn = new TableColumn<>("Destination");
+        TableColumn<ProjectInfo, String> projectfolderColumn = new TableColumn<>(getI18nLabel(SELECT_PROJECT_TABLE_DESTINATION));
         projectfolderColumn.setCellValueFactory(new PropertyValueFactory<>("folder"));
         projectfolderColumn.prefWidthProperty().bind(projectInfotable.widthProperty().multiply(0.691));
 
-        TableColumn<ProjectInfo, String> frameWorkColumn = new TableColumn<>("FrameWork");
+        TableColumn<ProjectInfo, String> frameWorkColumn = new TableColumn<>(getI18nLabel(SELECT_PROJECT_TABLE_FRAMEWORK));
         frameWorkColumn.setCellValueFactory(new PropertyValueFactory<>("frameWork"));
         frameWorkColumn.prefWidthProperty().bind(projectInfotable.widthProperty().multiply(0.15));
 

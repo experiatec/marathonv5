@@ -34,6 +34,7 @@ import net.sourceforge.marathon.runtime.fx.api.FileSelectionHandler;
 import net.sourceforge.marathon.runtime.fx.api.IFileSelectedAction;
 import net.sourceforge.marathon.runtime.fx.api.IPropertiesLayout;
 import net.sourceforge.marathon.runtime.fx.api.ISubPropertiesLayout;
+import static net.sourceforge.marathon.util.I18n.*;
 
 public class ExecutableJarLauncherLayout implements ISubPropertiesLayout, IFileSelectedAction, IPropertiesLayout {
 
@@ -54,9 +55,9 @@ public class ExecutableJarLauncherLayout implements ISubPropertiesLayout, IFileS
         public void requestFocus() {
         };
     };
-    private Button jarfileDirBrowse = FXUIUtils.createButton("browse", "Browse jar file", true, "Browse");
-    private Button workindDirBrowse = FXUIUtils.createButton("browse", "Browse working dir", true, "Browse");
-    private Button javaHomeBrowse = FXUIUtils.createButton("browse", "Browse java home", true, "Browse");
+    private Button jarfileDirBrowse = FXUIUtils.createButton("browse", getI18nLabel(LAUNCHER_EXEC_JAR_BUTTON_BROWSE_JAR_FILE_TOOLTIP), true, getI18nLabel(LAUNCHER_EXEC_JAR_BUTTON_BROWSE_JAR_FILE));
+    private Button workindDirBrowse = FXUIUtils.createButton("browse", getI18nLabel(LAUNCHER_EXEC_JAR_BUTTON_BROWSE_WORKING_DIR_TOOLTIP), true, getI18nLabel(LAUNCHER_EXEC_JAR_BUTTON_BROWSE_WORKING_DIR));
+    private Button javaHomeBrowse = FXUIUtils.createButton("browse", getI18nLabel(LAUNCHER_EXEC_JAR_BUTTON_BROWSE_JAVA_HOME_TOOLTIP), true, getI18nLabel(LAUNCHER_EXEC_JAR_BUTTON_BROWSE_JAVA_HOME));
 
     public ExecutableJarLauncherLayout(ModalDialog<?> parent) {
         this.parent = parent;
@@ -67,12 +68,12 @@ public class ExecutableJarLauncherLayout implements ISubPropertiesLayout, IFileS
     public Node getContent() {
         FormPane form = new FormPane("main-layout", 3);
         // @formatter:off
-            form.addFormField("Jar File: ", jarfileField, jarfileDirBrowse)
-	            .addFormField("Working Directory: ", workingDirField, workindDirBrowse)
-	            .addFormField("Window Title: ", windowTitle)
-                .addFormField("Program Arguments: ", programArgumentsField)
-                .addFormField("VM Arguments: ", vmArgumentsField)
-                .addFormField("Java Home: ", javaHomeField, javaHomeBrowse);
+            form.addFormField(getI18nLabel(LAUNCHER_EXEC_JAR_JAR_FILE), jarfileField, jarfileDirBrowse)
+	            .addFormField(getI18nLabel(LAUNCHER_EXEC_JAR_WORKING_DIR), workingDirField, workindDirBrowse)
+	            .addFormField(getI18nLabel(LAUNCHER_EXEC_JAR_WINDOW_TITLE), windowTitle)
+                .addFormField(getI18nLabel(LAUNCHER_EXEC_JAR_PROGRAM_ARGS), programArgumentsField)
+                .addFormField(getI18nLabel(LAUNCHER_EXEC_JAR_VM_ARGS), vmArgumentsField)
+                .addFormField(getI18nLabel(LAUNCHER_EXEC_JAR_JAVA_HOME), javaHomeField, javaHomeBrowse);
         // @formatter:on
         return form;
 
@@ -81,19 +82,19 @@ public class ExecutableJarLauncherLayout implements ISubPropertiesLayout, IFileS
     private void iniComponents() {
     	jarfileField.setEditable(false);
         FileSelectionHandler jarfileDirHandler = new FileSelectionHandler(this, null, parent, jarfileField,
-                "Select a Jar File");
+        		getI18nLabel(LAUNCHER_EXEC_JAR_JARFILE_DIR_HANDLER_TITLE));
         jarfileDirHandler.setMode(FileSelectionHandler.FILE_CHOOSER);
         jarfileDirBrowse.setOnAction(jarfileDirHandler);
         
         workingDirField.setEditable(false);
         FileSelectionHandler workingDirHandler = new FileSelectionHandler(this, null, parent, workingDirField,
-                "Select Working Directory");
+        		getI18nLabel(LAUNCHER_EXEC_JAR_WORKING_DIR_HANDLER_TITLE));
         workingDirHandler.setMode(FileSelectionHandler.DIRECTORY_CHOOSER);
         workindDirBrowse.setOnAction(workingDirHandler);
 
         javaHomeField.setEditable(false);
         FileSelectionHandler javaHomeHandler = new FileSelectionHandler(this, null, parent, javaHomeField,
-                "Select Java Home Folder");
+        		getI18nLabel(LAUNCHER_EXEC_JAR_JAVA_HOME_DIR_HANDLER_TITLE));
         javaHomeHandler.setMode(FileSelectionHandler.DIRECTORY_CHOOSER);
         javaHomeBrowse.setOnAction(javaHomeHandler);
 
@@ -101,7 +102,7 @@ public class ExecutableJarLauncherLayout implements ISubPropertiesLayout, IFileS
 
     @Override
     public String getName() {
-        return "Main";
+        return getI18nLabel(LAUNCHER_EXEC_JAR_TAB_MAIN_LABEL);
     }
 
     @Override
@@ -133,7 +134,7 @@ public class ExecutableJarLauncherLayout implements ISubPropertiesLayout, IFileS
     public boolean isValidInput(boolean showAlert) {
         if (jarfileField.getText() == null || jarfileField.getText().equals("")) {
             if (showAlert) {
-                FXUIUtils.showMessageDialog(parent.getStage(), "Jar file can't be empty", "Jar File", AlertType.ERROR);
+                FXUIUtils.showMessageDialog(parent.getStage(), getI18nLabel(LAUNCHER_EXEC_JAR_JAR_FILE_ERROR_MESSAGE), getI18nLabel(LAUNCHER_EXEC_JAR_JAR_FILE_ERROR_MESSAGE_FIELD), AlertType.ERROR);
             }
             Platform.runLater(() -> jarfileField.requestFocus());
             return false;
@@ -163,7 +164,7 @@ public class ExecutableJarLauncherLayout implements ISubPropertiesLayout, IFileS
 //        }
         if (programArgumentsField.getText().indexOf('\n') != -1 || programArgumentsField.getText().indexOf('\r') != -1) {
             if (showAlert) {
-                FXUIUtils.showMessageDialog(parent.getStage(), "Can not have new lines in Program Arguments", "Program Arguments",
+                FXUIUtils.showMessageDialog(parent.getStage(), getI18nLabel(LAUNCHER_EXEC_JAR_PROGRAM_ARGS_ERROR_MESSAGE), getI18nLabel(LAUNCHER_EXEC_JAR_PROGRAM_ARGS_ERROR_MESSAGE_FIELD),
                         AlertType.ERROR);
             }
             Platform.runLater(() -> programArgumentsField.requestFocus());
@@ -171,7 +172,7 @@ public class ExecutableJarLauncherLayout implements ISubPropertiesLayout, IFileS
         }
         if (vmArgumentsField.getText().indexOf('\n') != -1 || vmArgumentsField.getText().indexOf('\r') != -1) {
             if (showAlert) {
-                FXUIUtils.showMessageDialog(parent.getStage(), "Can not have new lines in VM Arguments", "VM Arguments",
+                FXUIUtils.showMessageDialog(parent.getStage(), getI18nLabel(LAUNCHER_EXEC_JAR_VM_ARGS_ERROR_MESSAGE), getI18nLabel(LAUNCHER_EXEC_JAR_VM_ARGS_ERROR_MESSAGE_FIELD),
                         AlertType.ERROR);
             }
             Platform.runLater(() -> vmArgumentsField.requestFocus());

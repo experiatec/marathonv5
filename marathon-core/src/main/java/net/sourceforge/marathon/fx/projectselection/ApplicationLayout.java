@@ -25,6 +25,7 @@ import net.sourceforge.marathon.runtime.api.Constants;
 import net.sourceforge.marathon.runtime.api.IRuntimeLauncherModel;
 import net.sourceforge.marathon.runtime.fx.api.CompositeLayout;
 import net.sourceforge.marathon.runtime.fx.api.IPropertiesLayout;
+import static net.sourceforge.marathon.util.I18n.*;
 
 public class ApplicationLayout extends CompositeLayout implements IPropertiesLayout {
 
@@ -36,7 +37,7 @@ public class ApplicationLayout extends CompositeLayout implements IPropertiesLay
 
     @Override
     public String getName() {
-        return "Application";
+        return getI18nLabel(APPLICATION_LAYOUT_APPLICATION_TAB_LABEL);
     }
 
     @Override
@@ -51,7 +52,7 @@ public class ApplicationLayout extends CompositeLayout implements IPropertiesLay
 
     @Override
     protected String getOptionFieldName() {
-        return "Launcher: ";
+        return getI18nLabel(APPLICATION_LAYOUT_APPLICATION_LAUNCHER_LABEL);
     }
 
     public IRuntimeLauncherModel getSelectedModel() {
@@ -71,6 +72,6 @@ public class ApplicationLayout extends CompositeLayout implements IPropertiesLay
 
     @Override
     protected void errorMessage() {
-        FXUIUtils.showMessageDialog(parent.getStage(), "Select an application launcher", "Application Launcher", AlertType.ERROR);
+        FXUIUtils.showMessageDialog(parent.getStage(), getI18nLabel(APPLICATION_LAYOUT_APPLICATION_LAUNCHER_ERROR_MESSAGE), getI18nLabel(APPLICATION_LAYOUT_APPLICATION_LAUNCHER_ERROR_MESSAGE_FIELD), AlertType.ERROR);
     }
 }

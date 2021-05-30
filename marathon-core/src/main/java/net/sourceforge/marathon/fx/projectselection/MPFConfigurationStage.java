@@ -36,6 +36,7 @@ import net.sourceforge.marathon.fx.api.FXUIUtils;
 import net.sourceforge.marathon.fx.api.ModalDialog;
 import net.sourceforge.marathon.runtime.TestApplication;
 import net.sourceforge.marathon.runtime.fx.api.IPropertiesLayout;
+import static net.sourceforge.marathon.util.I18n.*;
 
 public class MPFConfigurationStage extends ModalDialog<MPFConfigurationInfo> {
 
@@ -92,13 +93,13 @@ public class MPFConfigurationStage extends ModalDialog<MPFConfigurationInfo> {
     private ButtonBarX createButtonBar() {
         ButtonBarX buttonBar = new ButtonBarX();
         buttonBar.setId("ConfigurationButtonBar");
-        saveButton = FXUIUtils.createButton("save", "Save", true, "Save");
+        saveButton = FXUIUtils.createButton("save", getI18nLabel(MPF_CONFIGURATION_STAGE_BUTTON_SAVE_TOOLTIP), true, getI18nLabel(MPF_CONFIGURATION_STAGE_BUTTON_SAVE));
         saveButton.setOnAction((e) -> {
             onSave();
         });
-        Button cancelButton = FXUIUtils.createButton("cancel", "Cancel", true, "Cancel");
+        Button cancelButton = FXUIUtils.createButton("cancel", getI18nLabel(MPF_CONFIGURATION_STAGE_BUTTON_CANCEL_TOOLTIP), true, getI18nLabel(MPF_CONFIGURATION_STAGE_BUTTON_CANCEL));
         cancelButton.setOnAction((e) -> dispose());
-        testButton = FXUIUtils.createButton("test", "Test Settings...", true, "Test");
+        testButton = FXUIUtils.createButton("test", getI18nLabel(MPF_CONFIGURATION_STAGE_BUTTON_TEST_TOOLTIP), true, getI18nLabel(MPF_CONFIGURATION_STAGE_BUTTON_TEST));
         testButton.setOnAction((e) -> onTest());
         buttonBar.getButtons().addAll(saveButton, cancelButton, testButton);
         return buttonBar;

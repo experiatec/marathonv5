@@ -34,6 +34,7 @@ import net.sourceforge.marathon.runtime.fx.api.FileSelectionHandler;
 import net.sourceforge.marathon.runtime.fx.api.IFileSelectedAction;
 import net.sourceforge.marathon.runtime.fx.api.IPropertiesLayout;
 import net.sourceforge.marathon.runtime.fx.api.ISubPropertiesLayout;
+import static net.sourceforge.marathon.util.I18n.*;
 
 public class AppletLauncherLayout implements ISubPropertiesLayout, IFileSelectedAction, IPropertiesLayout {
 
@@ -48,8 +49,8 @@ public class AppletLauncherLayout implements ISubPropertiesLayout, IFileSelected
         public void requestFocus() {
         };
     };
-    private Button urlDirBrowse = FXUIUtils.createButton("browse", "Browse applet file", true, "Browse");
-    private Button javaHomeBrowse = FXUIUtils.createButton("browse", "Browse java home", true, "Browse");
+    private Button urlDirBrowse = FXUIUtils.createButton("browse", getI18nLabel(LAUNCHER_APPLET_BUTTON_BROWSE_URL_TOOLTIP), true, getI18nLabel(LAUNCHER_APPLET_BUTTON_BROWSE_URL));
+    private Button javaHomeBrowse = FXUIUtils.createButton("browse", getI18nLabel(LAUNCHER_APPLET_BUTTON_BROWSE_JAVA_HOME_TOOLTIP), true, getI18nLabel(LAUNCHER_APPLET_BUTTON_BROWSE_JAVA_HOME));
 
     public AppletLauncherLayout(ModalDialog<?> parent) {
         this.parent = parent;
@@ -60,10 +61,10 @@ public class AppletLauncherLayout implements ISubPropertiesLayout, IFileSelected
     public Node getContent() {
         FormPane form = new FormPane("main-layout", 3);
         // @formatter:off
-            form.addFormField("URL/File: ", urlField, urlDirBrowse)
-	            .addFormField("Window Title: ", windowTitle)
-	            .addFormField("VM Arguments: ", vmArgumentsField)
-                .addFormField("Java Home: ", javaHomeField, javaHomeBrowse);
+            form.addFormField(getI18nLabel(LAUNCHER_APPLET_URL), urlField, urlDirBrowse)
+	            .addFormField(getI18nLabel(LAUNCHER_APPLET_WINDOW_TITLE), windowTitle)
+	            .addFormField(getI18nLabel(LAUNCHER_APPLET_VM_ARGS), vmArgumentsField)
+                .addFormField(getI18nLabel(LAUNCHER_APPLET_JAVA_HOME), javaHomeField, javaHomeBrowse);
         // @formatter:on
         return form;
     }
@@ -71,13 +72,13 @@ public class AppletLauncherLayout implements ISubPropertiesLayout, IFileSelected
     private void iniComponents() {
     	urlField.setEditable(true);
         FileSelectionHandler urlDirHandler = new FileSelectionHandler(this, null, parent, urlField,
-                "Select the Applet");
+                getI18nLabel(LAUNCHER_APPLET_URL_DIR_HANDLER_TITLE));
         urlDirHandler.setMode(FileSelectionHandler.FILE_CHOOSER);
         urlDirBrowse.setOnAction(urlDirHandler);
 
         javaHomeField.setEditable(false);
         FileSelectionHandler javaHomeHandler = new FileSelectionHandler(this, null, parent, javaHomeField,
-                "Select Java Home Folder");
+        		getI18nLabel(LAUNCHER_APPLET_JAVA_HOME_DIR_HANDLER_TITLE));
         javaHomeHandler.setMode(FileSelectionHandler.DIRECTORY_CHOOSER);
         javaHomeBrowse.setOnAction(javaHomeHandler);
 
@@ -85,7 +86,7 @@ public class AppletLauncherLayout implements ISubPropertiesLayout, IFileSelected
 
     @Override
     public String getName() {
-        return "Main";
+        return getI18nLabel(LAUNCHER_APPLET_TAB_MAIN_LABEL);
     }
 
     @Override
@@ -113,7 +114,7 @@ public class AppletLauncherLayout implements ISubPropertiesLayout, IFileSelected
     public boolean isValidInput(boolean showAlert) {
         if (urlField.getText() == null || urlField.getText().equals("")) {
             if (showAlert) {
-                FXUIUtils.showMessageDialog(parent.getStage(), "Applet file can't be empty", "Applet File", AlertType.ERROR);
+                FXUIUtils.showMessageDialog(parent.getStage(), getI18nLabel(LAUNCHER_APPLET_URL_ERROR_MESSAGE), getI18nLabel(LAUNCHER_APPLET_URL_ERROR_MESSAGE_FIELD), AlertType.ERROR);
             }
             Platform.runLater(() -> urlField.requestFocus());
             return false;
@@ -121,7 +122,7 @@ public class AppletLauncherLayout implements ISubPropertiesLayout, IFileSelected
 
         if (vmArgumentsField.getText().indexOf('\n') != -1 || vmArgumentsField.getText().indexOf('\r') != -1) {
             if (showAlert) {
-                FXUIUtils.showMessageDialog(parent.getStage(), "Can not have new lines in VM Arguments", "VM Arguments",
+                FXUIUtils.showMessageDialog(parent.getStage(), getI18nLabel(LAUNCHER_APPLET_VM_ARGS_ERROR_MESSAGE), getI18nLabel(LAUNCHER_APPLET_VM_ARGS_ERROR_MESSAGE_FIELD),
                         AlertType.ERROR);
             }
             Platform.runLater(() -> vmArgumentsField.requestFocus());

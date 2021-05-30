@@ -40,6 +40,7 @@ import net.sourceforge.marathon.fx.api.IFileSelectionInfoHandler;
 import net.sourceforge.marathon.fx.api.ModalDialog;
 import net.sourceforge.marathon.fx.api.UpDownHandler;
 import net.sourceforge.marathon.runtime.api.MPFUtils;
+import static net.sourceforge.marathon.util.I18n.*;
 
 public abstract class ListLayout implements IPropertiesLayout {
 
@@ -227,11 +228,11 @@ public abstract class ListLayout implements IPropertiesLayout {
         VBox vBox = new VBox();
         vBox.setId("VerticalButtonBar");
         if (isTraversalNeeded()) {
-            upButton = FXUIUtils.createButton("up", "Move selection up", true, "Up");
+            upButton = FXUIUtils.createButton("up", getI18nLabel(CLASSPATH_BUTTON_UP_TOOLTIP), true, getI18nLabel(CLASSPATH_BUTTON_UP));
             setButtonState(upButton, false);
             upButton.setOnAction(new UpDownHandler(classPathListView, true));
             upButton.setMaxWidth(Double.MAX_VALUE);
-            downButton = FXUIUtils.createButton("down", "Move selection down", true, "Down");
+            downButton = FXUIUtils.createButton("down", getI18nLabel(CLASSPATH_BUTTON_DOWN_TOOLTIP), true, getI18nLabel(CLASSPATH_BUTTON_DOWN));
             setButtonState(downButton, false);
             downButton.setOnAction(new UpDownHandler(classPathListView, false));
             downButton.setMaxWidth(Double.MAX_VALUE);
@@ -239,22 +240,22 @@ public abstract class ListLayout implements IPropertiesLayout {
         }
 
         if (isAddArchivesNeeded()) {
-            addJarsButton = FXUIUtils.createButton("addjar", "Add JAR/ZIP files to class path", true, "Add Archives...");
+            addJarsButton = FXUIUtils.createButton("addjar", getI18nLabel(CLASSPATH_BUTTON_ADD_ARCHIVES_TOOLTIP), true, getI18nLabel(CLASSPATH_BUTTON_ADD_ARCHIVES));
             addJarsButton.setOnAction(new BrowseActionHandler(
-                    new FileSelectionInfo("Select Zip/Jar files", "Java Archives", new String[] { "*.jar", "*.zip" },
-                            "Add Zip/Jar files to the application classpath", FXUIUtils.getIcon("addjar"))));
+                    new FileSelectionInfo(getI18nLabel(CLASSPATH_POPUP_FILE_SELECTION_TITLE), getI18nLabel(CLASSPATH_POPUP_FILE_SELECTION_FILE_TYPE), new String[] { "*.jar", "*.zip" },
+                    		getI18nLabel(CLASSPATH_POPUP_FILE_SELECTION_SUB_TITLE), FXUIUtils.getIcon("addjar"))));
             vBox.getChildren().add(addJarsButton);
         }
 
         if (isAddFoldersNeeded()) {
-            addFoldersButton = FXUIUtils.createButton("addfolder", "Add folders to class path", true, "Add Folders...");
-            addFoldersButton.setOnAction(new BrowseActionHandler(new FileSelectionInfo("Select Folders", null, null,
-                    "Add class files from folders to classpath", FXUIUtils.getIcon("addfolder"))));
+            addFoldersButton = FXUIUtils.createButton("addfolder", getI18nLabel(CLASSPATH_BUTTON_ADD_FOLDERS_TOOLTIP), true, getI18nLabel(CLASSPATH_BUTTON_ADD_FOLDERS));
+            addFoldersButton.setOnAction(new BrowseActionHandler(new FileSelectionInfo(getI18nLabel(CLASSPATH_POPUP_FOLDER_SELECTION_TITLE), null, null,
+            		getI18nLabel(CLASSPATH_POPUP_FOLDER_SELECTION_TITLE), FXUIUtils.getIcon("addfolder"))));
             addFoldersButton.setMaxWidth(Double.MAX_VALUE);
             vBox.getChildren().add(addFoldersButton);
         }
 
-        deleteButton = FXUIUtils.createButton("remove", "Delete selection", true, "Remove");
+        deleteButton = FXUIUtils.createButton("remove", getI18nLabel(CLASSPATH_BUTTON_REMOVE), true, getI18nLabel(CLASSPATH_BUTTON_REMOVE));
         setButtonState(deleteButton, false);
         deleteButton.setOnAction((e) -> {
             ObservableList<ClassPathElement> selectedItems = classPathListView.getSelectionModel().getSelectedItems();

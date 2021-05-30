@@ -37,7 +37,13 @@ import net.sourceforge.marathon.runtime.fx.api.FileSelectionHandler;
 import net.sourceforge.marathon.runtime.fx.api.IFileSelectedAction;
 import net.sourceforge.marathon.runtime.fx.api.IPropertiesLayout;
 import net.sourceforge.marathon.runtime.fx.api.ISubPropertiesLayout;
+import static net.sourceforge.marathon.util.I18n.*;
 
+/**
+ * Java Command Line Launcher
+ * @author glopez
+ *
+ */
 public class MainLayout implements ISubPropertiesLayout, IFileSelectedAction, IPropertiesLayout {
 
     public static final Logger LOGGER = Logger.getLogger(MainLayout.class.getName());
@@ -56,8 +62,8 @@ public class MainLayout implements ISubPropertiesLayout, IFileSelectedAction, IP
         public void requestFocus() {
         };
     };
-    private Button workindDirBrowse = FXUIUtils.createButton("browse", "Browse working dir", true, "Browse");
-    private Button javaHomeBrowse = FXUIUtils.createButton("browse", "Browse java home", true, "Browse");
+    private Button workindDirBrowse = FXUIUtils.createButton("browse", "XXX", true, getI18nLabel(LAUNCHER_JCMDLINE_BUTTON_BROWSE_WORKING_DIR));
+    private Button javaHomeBrowse = FXUIUtils.createButton("browse", getI18nLabel(LAUNCHER_JCMDLINE_BUTTON_BROWSE_JAVA_HOME_TOOLTIP), true, getI18nLabel(LAUNCHER_JCMDLINE_BUTTON_BROWSE_JAVA_HOME));
 
     public MainLayout(ModalDialog<?> parent) {
         this.parent = parent;
@@ -68,11 +74,11 @@ public class MainLayout implements ISubPropertiesLayout, IFileSelectedAction, IP
     public Node getContent() {
         FormPane form = new FormPane("main-layout", 3);
         // @formatter:off
-            form.addFormField("Class Name: ", classNameField)
-                .addFormField("Program Arguments: ", programArgumentsField)
-                .addFormField("VM Arguments: ", vmArgumentsField)
-                .addFormField("Working Directory: ", workingDirField, workindDirBrowse)
-                .addFormField("Java Home: ", javaHomeField, javaHomeBrowse);
+            form.addFormField(getI18nLabel(LAUNCHER_JCMDLINE_CLASS_NAME), classNameField)
+                .addFormField(getI18nLabel(LAUNCHER_JCMDLINE_PROGRAM_ARGS), programArgumentsField)
+                .addFormField(getI18nLabel(LAUNCHER_JCMDLINE_VM_ARGS), vmArgumentsField)
+                .addFormField(getI18nLabel(LAUNCHER_JCMDLINE_WORKING_DIR), workingDirField, workindDirBrowse)
+                .addFormField(getI18nLabel(LAUNCHER_JCMDLINE_JAVA_HOME), javaHomeField, javaHomeBrowse);
         // @formatter:on
         return form;
 
@@ -81,13 +87,13 @@ public class MainLayout implements ISubPropertiesLayout, IFileSelectedAction, IP
     private void iniComponents() {
         workingDirField.setEditable(false);
         FileSelectionHandler workingDirHandler = new FileSelectionHandler(this, null, parent, workingDirField,
-                "Select Working Directory");
+        		getI18nLabel(LAUNCHER_JCMDLINE_WORKING_DIR_HANDLER_TITLE));
         workingDirHandler.setMode(FileSelectionHandler.DIRECTORY_CHOOSER);
         workindDirBrowse.setOnAction(workingDirHandler);
 
         javaHomeField.setEditable(false);
         FileSelectionHandler javaHomeHandler = new FileSelectionHandler(this, null, parent, javaHomeField,
-                "Select Java Home Folder");
+        		getI18nLabel(LAUNCHER_JCMDLINE_JAVA_HOME_DIR_HANDLER_TITLE));
         javaHomeHandler.setMode(FileSelectionHandler.DIRECTORY_CHOOSER);
         javaHomeBrowse.setOnAction(javaHomeHandler);
 
@@ -95,7 +101,7 @@ public class MainLayout implements ISubPropertiesLayout, IFileSelectedAction, IP
 
     @Override
     public String getName() {
-        return "Main";
+        return getI18nLabel(LAUNCHER_JCMDLINE_TAB_MAIN_LABEL);
     }
 
     @Override
@@ -125,14 +131,14 @@ public class MainLayout implements ISubPropertiesLayout, IFileSelectedAction, IP
     public boolean isValidInput(boolean showAlert) {
         if (classNameField.getText() == null || classNameField.getText().equals("")) {
             if (showAlert) {
-                FXUIUtils.showMessageDialog(parent.getStage(), "Main class can't be empty", "Main Class", AlertType.ERROR);
+                FXUIUtils.showMessageDialog(parent.getStage(), getI18nLabel(LAUNCHER_JCMDLINE_CLASS_NAME_ERROR_MESSAGE), getI18nLabel(LAUNCHER_JCMDLINE_CLASS_NAME_ERROR_MESSAGE_FIELD), AlertType.ERROR);
             }
             Platform.runLater(() -> classNameField.requestFocus());
             return false;
         }
         if (!ValidationUtil.isValidClassName(classNameField.getText())) {
             if (showAlert) {
-                FXUIUtils.showMessageDialog(parent.getStage(), "Invalid class name given for main class", "Main Class",
+                FXUIUtils.showMessageDialog(parent.getStage(), getI18nLabel(LAUNCHER_JCMDLINE_CLASS_NAME_ERROR_MESSAGE2), getI18nLabel(LAUNCHER_JCMDLINE_CLASS_NAME_ERROR_MESSAGE2_FIELD),
                         AlertType.ERROR);
             }
             Platform.runLater(() -> classNameField.requestFocus());
@@ -141,8 +147,8 @@ public class MainLayout implements ISubPropertiesLayout, IFileSelectedAction, IP
         if (classNameField.getText().indexOf('.') == -1) {
             if (showAlert) {
                 Optional<ButtonType> r = FXUIUtils.showConfirmDialog(parent.getStage(),
-                        "There is no package given for the main class. You need to give fully qualified class name. Do you want to continue?",
-                        "Main Class", AlertType.CONFIRMATION, ButtonType.YES, ButtonType.NO);
+                		getI18nLabel(LAUNCHER_JCMDLINE_CLASS_NAME_ERROR_MESSAGE3),
+                        getI18nLabel(LAUNCHER_JCMDLINE_CLASS_NAME_ERROR_MESSAGE3_FIELD), AlertType.CONFIRMATION, ButtonType.YES, ButtonType.NO);
                 if (r.get() != ButtonType.YES) {
                     Platform.runLater(() -> classNameField.requestFocus());
                     return false;
@@ -155,7 +161,7 @@ public class MainLayout implements ISubPropertiesLayout, IFileSelectedAction, IP
         }
         if (programArgumentsField.getText().indexOf('\n') != -1 || programArgumentsField.getText().indexOf('\r') != -1) {
             if (showAlert) {
-                FXUIUtils.showMessageDialog(parent.getStage(), "Can not have new lines in Program Arguments", "Program Arguments",
+                FXUIUtils.showMessageDialog(parent.getStage(), getI18nLabel(LAUNCHER_JCMDLINE_PROGRAM_ARGS_ERROR_MESSAGE), getI18nLabel(LAUNCHER_JCMDLINE_PROGRAM_ARGS_ERROR_MESSAGE_FIELD),
                         AlertType.ERROR);
             }
             Platform.runLater(() -> programArgumentsField.requestFocus());
@@ -163,7 +169,7 @@ public class MainLayout implements ISubPropertiesLayout, IFileSelectedAction, IP
         }
         if (vmArgumentsField.getText().indexOf('\n') != -1 || vmArgumentsField.getText().indexOf('\r') != -1) {
             if (showAlert) {
-                FXUIUtils.showMessageDialog(parent.getStage(), "Can not have new lines in VM Arguments", "VM Arguments",
+                FXUIUtils.showMessageDialog(parent.getStage(), getI18nLabel(LAUNCHER_JCMDLINE_VM_ARGS_ERROR_MESSAGE), getI18nLabel(LAUNCHER_JCMDLINE_VM_ARGS_ERROR_MESSAGE_FIELD),
                         AlertType.ERROR);
             }
             Platform.runLater(() -> vmArgumentsField.requestFocus());

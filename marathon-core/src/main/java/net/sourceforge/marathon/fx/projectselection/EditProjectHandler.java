@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 import javafx.stage.Stage;
 import net.sourceforge.marathon.runtime.api.Constants;
 import net.sourceforge.marathon.runtime.api.ProjectFile;
+import static net.sourceforge.marathon.util.I18n.*;
 
 public class EditProjectHandler implements IEditProjectHandler {
 
@@ -40,7 +41,7 @@ public class EditProjectHandler implements IEditProjectHandler {
     @Override
     public boolean editProject(ProjectInfo selected) {
         List<Boolean> projectEdited = new ArrayList<>();
-        String title = "Configure";
+        String title = getI18nLabel(EDIT_PROJECT_TITLE);
         String dirName = selected.getFolder();
         Properties properties = new Properties();
         try {
@@ -52,7 +53,7 @@ public class EditProjectHandler implements IEditProjectHandler {
         setFrameWork(properties);
         String name = properties.getProperty(Constants.PROP_PROJECT_NAME);
         if (name != null) {
-            title = "Configure - " + name;
+            title = title.concat(" (").concat(name).concat(")");
         }
         MPFConfigurationInfo mpfConfigurationInfo = new MPFConfigurationInfo(title, selected.getFolder(), properties);
         MPFConfigurationStage mpfConfigurationStage = new MPFConfigurationStage(parent, mpfConfigurationInfo) {

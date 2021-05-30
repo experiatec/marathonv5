@@ -42,6 +42,7 @@ import net.sourceforge.marathon.fx.api.FXUIUtils;
 import net.sourceforge.marathon.fx.api.ModalDialog;
 import net.sourceforge.marathon.fx.projectselection.FormPane;
 import net.sourceforge.marathon.runtime.api.PlugInModelInfo;
+import static net.sourceforge.marathon.util.I18n.*;
 
 public abstract class CompositeLayout implements IPropertiesLayout {
 
@@ -154,7 +155,7 @@ public abstract class CompositeLayout implements IPropertiesLayout {
                 props.load(url.openStream());
                 Set<Entry<Object, Object>> entries = props.entrySet();
                 for (Entry<Object, Object> entry : entries) {
-                    model.add(new PlugInModelInfo((String) entry.getValue(), (String) entry.getKey()));
+                    model.add(new PlugInModelInfo(getI18nLabel((String) entry.getValue()), (String) entry.getKey()));
                 }
             } catch (FileNotFoundException e) {
                 e.printStackTrace();

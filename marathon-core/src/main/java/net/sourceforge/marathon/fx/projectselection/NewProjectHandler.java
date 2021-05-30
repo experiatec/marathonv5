@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 
 import javafx.stage.Stage;
 import net.sourceforge.marathon.runtime.api.Constants;
+import static net.sourceforge.marathon.util.I18n.*;
 
 public class NewProjectHandler implements INewProjectHandler {
 
@@ -36,7 +37,7 @@ public class NewProjectHandler implements INewProjectHandler {
     @Override
     public ProjectInfo createNewProject() {
         List<File> projects = new ArrayList<>();
-        MPFConfigurationInfo mpfConfigurationInfo = new MPFConfigurationInfo("Configure - (New Project)");
+        MPFConfigurationInfo mpfConfigurationInfo = new MPFConfigurationInfo(getI18nLabel(NEW_PROJECT_TITLE));
         MPFConfigurationStage mpfConfigurationStage = new MPFConfigurationStage(parent, mpfConfigurationInfo) {
             @Override
             public void onSave() {

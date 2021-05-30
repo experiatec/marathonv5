@@ -35,6 +35,7 @@ import net.sourceforge.marathon.runtime.fx.api.FileSelectionHandler;
 import net.sourceforge.marathon.runtime.fx.api.IFileSelectedAction;
 import net.sourceforge.marathon.runtime.fx.api.IPropertiesLayout;
 import net.sourceforge.marathon.runtime.fx.api.ISubPropertiesLayout;
+import static net.sourceforge.marathon.util.I18n.*;
 
 public class WebStartLauncherLayout implements ISubPropertiesLayout, IFileSelectedAction, IPropertiesLayout {
 
@@ -52,8 +53,8 @@ public class WebStartLauncherLayout implements ISubPropertiesLayout, IFileSelect
         public void requestFocus() {
         };
     };
-    private Button urlDirBrowse = FXUIUtils.createButton("browse", "Browse JNLP file", true, "Browse");
-    private Button javaHomeBrowse = FXUIUtils.createButton("browse", "Browse java home", true, "Browse");
+    private Button urlDirBrowse = FXUIUtils.createButton("browse", getI18nLabel(LAUNCHER_WEBSTART_BUTTON_BROWSE_JNLP_TOOLTIP), true, getI18nLabel(LAUNCHER_WEBSTART_BUTTON_BROWSE_JNLP));
+    private Button javaHomeBrowse = FXUIUtils.createButton("browse", getI18nLabel(LAUNCHER_WEBSTART_BUTTON_BROWSE_JAVA_TOOLTIP), true, getI18nLabel(LAUNCHER_WEBSTART_BUTTON_BROWSE_JAVA));
 
     public WebStartLauncherLayout(ModalDialog<?> parent) {
         this.parent = parent;
@@ -64,13 +65,13 @@ public class WebStartLauncherLayout implements ISubPropertiesLayout, IFileSelect
     public Node getContent() {
         FormPane form = new FormPane("main-layout", 3);
         // @formatter:off
-            form.addFormField("URL/File: ", urlField, urlDirBrowse)
-	            .addFormField("Window Title: ", windowTitle)
-	            .addFormField("VM Arguments: ", vmArgumentsField)
-	            .addFormField("Webstart Options: ", webstartOptionsField)
-	            .addFormField("No Splash: ", nosplashCheck)
-	            .addFormField("Offline: ", offlineCheck)
-                .addFormField("Java Home: ", javaHomeField, javaHomeBrowse);
+            form.addFormField(getI18nLabel(LAUNCHER_WEBSTART_URL), urlField, urlDirBrowse)
+	            .addFormField(getI18nLabel(LAUNCHER_WEBSTART_WINDOW_TITLE), windowTitle)
+	            .addFormField(getI18nLabel(LAUNCHER_WEBSTART_VM_ARGUMENTS), vmArgumentsField)
+	            .addFormField(getI18nLabel(LAUNCHER_WEBSTART_WEBSTART_OPTIONS), webstartOptionsField)
+	            .addFormField(getI18nLabel(LAUNCHER_WEBSTART_NO_SPLASH), nosplashCheck)
+	            .addFormField(getI18nLabel(LAUNCHER_WEBSTART_OFFLINE), offlineCheck)
+                .addFormField(getI18nLabel(LAUNCHER_WEBSTART_JAVA_HOME), javaHomeField, javaHomeBrowse);
         // @formatter:on
         return form;
 
@@ -79,13 +80,13 @@ public class WebStartLauncherLayout implements ISubPropertiesLayout, IFileSelect
     private void iniComponents() {
     	urlField.setEditable(true);
         FileSelectionHandler urlDirHandler = new FileSelectionHandler(this, null, parent, urlField,
-                "Select a JNLP File");
+        		getI18nLabel(LAUNCHER_WEBSTART_URL_DIR_HANDLER_TITLE));
         urlDirHandler.setMode(FileSelectionHandler.FILE_CHOOSER);
         urlDirBrowse.setOnAction(urlDirHandler);
 
         javaHomeField.setEditable(false);
         FileSelectionHandler javaHomeHandler = new FileSelectionHandler(this, null, parent, javaHomeField,
-                "Select Java Home Folder");
+        		getI18nLabel(LAUNCHER_WEBSTART_JAVA_HOME_HANDLER_TITLE));
         javaHomeHandler.setMode(FileSelectionHandler.DIRECTORY_CHOOSER);
         javaHomeBrowse.setOnAction(javaHomeHandler);
 
@@ -93,7 +94,7 @@ public class WebStartLauncherLayout implements ISubPropertiesLayout, IFileSelect
 
     @Override
     public String getName() {
-        return "Main";
+        return getI18nLabel(LAUNCHER_WEBSTART_TAB_MAIN_LABEL);
     }
 
     @Override
@@ -127,7 +128,7 @@ public class WebStartLauncherLayout implements ISubPropertiesLayout, IFileSelect
     public boolean isValidInput(boolean showAlert) {
         if (urlField.getText() == null || urlField.getText().equals("")) {
             if (showAlert) {
-                FXUIUtils.showMessageDialog(parent.getStage(), "JNLP file can't be empty", "Jar File", AlertType.ERROR);
+                FXUIUtils.showMessageDialog(parent.getStage(), getI18nLabel(LAUNCHER_WEBSTART_URL_ERROR_MESSAGE), getI18nLabel(LAUNCHER_WEBSTART_URL_ERROR_MESSAGE_FIELD), AlertType.ERROR);
             }
             Platform.runLater(() -> urlField.requestFocus());
             return false;
@@ -157,7 +158,7 @@ public class WebStartLauncherLayout implements ISubPropertiesLayout, IFileSelect
 //        }
         if (webstartOptionsField.getText().indexOf('\n') != -1 || webstartOptionsField.getText().indexOf('\r') != -1) {
             if (showAlert) {
-                FXUIUtils.showMessageDialog(parent.getStage(), "Can not have new lines in Program Arguments", "Webstart Options",
+                FXUIUtils.showMessageDialog(parent.getStage(), getI18nLabel(LAUNCHER_WEBSTART_WEBSTART_OPTIONS_ERROR_MESSAGE), getI18nLabel(LAUNCHER_WEBSTART_WEBSTART_OPTIONS_ERROR_MESSAGE_FIELD),
                         AlertType.ERROR);
             }
             Platform.runLater(() -> webstartOptionsField.requestFocus());
@@ -165,7 +166,7 @@ public class WebStartLauncherLayout implements ISubPropertiesLayout, IFileSelect
         }
         if (vmArgumentsField.getText().indexOf('\n') != -1 || vmArgumentsField.getText().indexOf('\r') != -1) {
             if (showAlert) {
-                FXUIUtils.showMessageDialog(parent.getStage(), "Can not have new lines in VM Arguments", "VM Arguments",
+                FXUIUtils.showMessageDialog(parent.getStage(), getI18nLabel(LAUNCHER_WEBSTART_VM_ARGUMENTS_ERROR_MESSAGE), getI18nLabel(LAUNCHER_WEBSTART_VM_ARGUMENTS_ERROR_MESSAGE_FIELD),
                         AlertType.ERROR);
             }
             Platform.runLater(() -> vmArgumentsField.requestFocus());

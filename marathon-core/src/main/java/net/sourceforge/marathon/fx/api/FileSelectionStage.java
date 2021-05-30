@@ -37,6 +37,7 @@ import net.sourceforge.marathon.fx.projectselection.ProjectLayout;
 import net.sourceforge.marathon.runtime.api.Constants;
 import net.sourceforge.marathon.runtime.fx.api.FileSelectionHandler;
 import net.sourceforge.marathon.runtime.fx.api.IFileSelectedAction;
+import static net.sourceforge.marathon.util.I18n.*;
 
 public class FileSelectionStage extends ModalDialog<FileSelectionInfo> implements IFileSelectedAction {
 
@@ -73,7 +74,7 @@ public class FileSelectionStage extends ModalDialog<FileSelectionInfo> implement
         dirField.setId("DirectoryField");
         dirField.textProperty().addListener((observable, oldValue, newValue) -> updateOKButton());
         HBox.setHgrow(dirField, Priority.ALWAYS);
-        Button browseButton = FXUIUtils.createButton("browse", "Browse directory", true, "Browse");
+        Button browseButton = FXUIUtils.createButton("browse", getI18nLabel(FILE_SELECTION_STAGE_BUTTON_BROWSE_TOOLTIP), true, getI18nLabel(FILE_SELECTION_STAGE_BUTTON_BROWSE));
         FileSelectionHandler browserListener;
         String fileType = fileSelectionInfo.getFileType();
         if (fileType != null) {
@@ -86,7 +87,7 @@ public class FileSelectionStage extends ModalDialog<FileSelectionInfo> implement
         }
         browserListener.setPreviousDir(new File(System.getProperty(Constants.PROP_PROJECT_DIR, ProjectLayout.projectDir)));
         browseButton.setOnAction(browserListener);
-        Label label = createLabel("Name: ");
+        Label label = createLabel(getI18nLabel(FILE_SELECTION_STAGE_NAME));
         label.setMinWidth(Region.USE_PREF_SIZE);
         label.setId("FileSelectedLabel");
         browseFieldBox.getChildren().addAll(label, dirField, browseButton);
@@ -105,12 +106,12 @@ public class FileSelectionStage extends ModalDialog<FileSelectionInfo> implement
     private ButtonBarX createButtonBar() {
         ButtonBarX buttonBar = new ButtonBarX();
         buttonBar.setId("FileSelectionButtonBar");
-        okButton = FXUIUtils.createButton("ok", "OK", true, "OK");
+        okButton = FXUIUtils.createButton("ok", getI18nLabel(FILE_SELECTION_STAGE_BUTTON_OK_TOOLTIP), true, getI18nLabel(FILE_SELECTION_STAGE_BUTTON_OK));
         okButton.setDisable(true);
         okButton.setOnAction((e) -> {
             onOK();
         });
-        Button cancelButton = FXUIUtils.createButton("cancel", "Cancel", true, "Cancel");
+        Button cancelButton = FXUIUtils.createButton("cancel", getI18nLabel(FILE_SELECTION_STAGE_BUTTON_CANCEL_TOOLTIP), true, getI18nLabel(FILE_SELECTION_STAGE_BUTTON_CANCEL));
         cancelButton.setOnAction((e) -> {
             onCancel();
         });
